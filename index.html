@@ -9,7 +9,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial;height:100%;overflow:hidden}
 #stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000}
-#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s}
 .top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
 .icon{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:20px;border:none;color:#fff}
 .icon.green{background:#1a7a2a}
@@ -37,7 +37,6 @@ html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial;height
 .close{float:right;background:#333;color:#fff;border:none;padding:8px 14px;border-radius:10px}
 .btn{width:100%;background:#FFD700;color:#000;border:none;padding:15px;border-radius:12px;font-weight:900;font-size:17px;margin-top:8px}
 .btn2{width:100%;background:#222;color:#fff;border:none;padding:13px;border-radius:12px;font-size:15px;margin-top:6px}
-/* LANDSCAPE - When you turn phone sideways */
 @media (orientation: landscape){
   #titleBox{top:70px;font-size:24px}
   #logoBox{top:55px;width:70px}
@@ -116,13 +115,11 @@ html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial;height
 </div>
 
 <script>
-window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ startCam(); }, 300); });
-window.addEventListener('resize', ()=>{ let v=document.getElementById('cam'); v.style.width='100%'; v.style.height='100%'; });
 let stream=null,facing='user';
 async function startCam(){
  try{if(stream)stream.getTracks().forEach(t=>t.stop());
  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
- document.getElementById('cam').srcObject=stream;}catch(e){}
+ document.getElementById('cam').srcObject=stream; autoRotate();}catch(e){}
 }
 function flip(){facing=facing==='user'?'environment':'user';startCam();}
 function setMode(b){document.querySelectorAll('.modes-in button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
@@ -132,6 +129,27 @@ function toggleEl(id){let el=document.getElementById(id);el.style.display=el.sty
 function saveLive(){['fbUrl','fbKey','ytUrl','ytKey','rtmpUrl'].forEach(k=>localStorage.setItem(k,document.getElementById(k).value));document.getElementById('saveMsg').textContent='✅ Saved! Ready to Go Live';document.getElementById('readyBtn').textContent='GO LIVE';}
 function goLive(){openPanel('live');}
 ['fbUrl','fbKey','ytUrl','ytKey','rtmpUrl'].forEach(k=>{if(localStorage.getItem(k))document.getElementById(k).value=localStorage.getItem(k);});
+
+// AUTO ROTATE - No tapping, phone turns = video turns
+function autoRotate(){
+  let a = 0;
+  if(screen.orientation && typeof screen.orientation.angle === 'number') a = screen.orientation.angle;
+  else if(typeof window.orientation === 'number') a = window.orientation;
+  let cam = document.getElementById('cam');
+  if(!cam) return;
+  if(a === 90) cam.style.transform = 'rotate(0deg)';
+  else if(a === -90 || a === 270) cam.style.transform = 'rotate(180deg)';
+  else if(a === 180) cam.style.transform = 'rotate(180deg)';
+  else cam.style.transform = 'rotate(0deg)';
+}
+window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ autoRotate(); startCam(); }, 300); });
+if(screen.orientation) screen.orientation.addEventListener('change', ()=>{ setTimeout(autoRotate, 200); });
+window.addEventListener('resize', ()=>{ autoRotate(); });
+window.addEventListener('deviceorientation', (e)=>{
+  if(e.beta && e.beta < -150) document.getElementById('cam').style.transform='rotate(180deg)';
+  if(e.beta && e.beta > -30 && e.beta < 30) document.getElementById('cam').style.transform='rotate(0deg)';
+});
+
 document.querySelectorAll('.overlay').forEach(el=>{
  let sx,sy,ox,oy,drag=false;
  el.addEventListener('touchstart',e=>{drag=true;let t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=el.offsetLeft;oy=el.offsetTop;},{passive:true});
