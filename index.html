@@ -8,9 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
 body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
-#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column;transition:transform 0.3s}
-body.mode-portrait #app{width:100%;height:100%;transform:rotate(0deg)}
-body.mode-landscape #app{width:100vh;height:100vw;transform:rotate(90deg);transform-origin:center center;position:absolute;top:50%;left:50%;margin-top:-50vw;margin-left:-50vh}
+#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
 #logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
@@ -45,12 +43,12 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #countNum{width:110px;height:110px;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px}
 #liveTopBar{position:absolute;top:0;left:0;right:0;display:none;z-index:30;padding:8px;background:rgba(0,0,0,.4)}
 #app.is-live #liveTopBar{display:block}
-#app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel,#app.is-live #orientBar{display:none!important}
+#app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
 </style>
 </head>
-<body class="mode-portrait">
+<body>
 <div id="app">
 <div id="splashScreen" class="screen active" style="background:#000">
 <img src="logo.png" class="jstvLogo" alt="JSTV">
@@ -79,11 +77,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button class="btn btnDark" onclick="loginGo()">Sign up with email</button>
 </div>
 <div id="mainScreen" class="screen" style="padding:0;justify-content:flex-start">
-<div id="orientBar" style="display:flex;gap:6px;padding:8px;background:#000;width:100%">
-<button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT - Whole Screen</button>
-<button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE - Whole Screen</button>
-</div>
-<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Whole Screen - HD Camera</p>
 <div style="display:flex;width:100%;background:#111">
 <button class="studioTab on" onclick="setStudioTab('media',this)">Media</button>
 <button class="studioTab" onclick="setStudioTab('playlist',this)">Playlist</button>
@@ -163,7 +156,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <p style="margin-top:10px">Live</p>
 <p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
 <p>Save video after streaming <span style="color:#aaa">OFF</span></p>
-<p>Orientation: Full Screen - Portrait or Landscape</p>
 <p>App version: 5.4.3 - STUDIO</p>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
@@ -200,32 +192,22 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="startingScreen">
 <div style="font-size:60px">📱</div>
-<h2 style="margin-top:12px" id="startingTitle">Starting in portrait mode</h2>
+<h2 style="margin-top:12px" id="startingTitle">Starting</h2>
 <p style="color:#ccc;margin-top:8px">The screen orientation cannot be<br>rotated after broadcast has begun.</p>
 <button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px">Cancel</button>
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
-let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0, currentMode='portrait';
+let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
 async function startCam(){
 try{
 if(stream)stream.getTracks().forEach(t=>t.stop());
-let constraints={video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}};
-if(currentMode==='landscape'){constraints.video.width={ideal:1920};constraints.video.height={ideal:1080};}
-else{constraints.video.width={ideal:1080};constraints.video.height={ideal:1920};}
-stream=await navigator.mediaDevices.getUserMedia(constraints);
+stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}});
 document.getElementById('cam').srcObject=stream;
 }catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
-}
-function setMode(mode){
-currentMode=mode;
-const p=document.getElementById('portraitBtn'),l=document.getElementById('landscapeBtn');
-if(mode==='landscape'){document.body.className='mode-landscape';l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Whole Screen - HD';document.getElementById('startingTitle').innerText='Starting in landscape mode';}
-else{document.body.className='mode-portrait';p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Whole Screen - HD';document.getElementById('startingTitle').innerText='Starting in portrait mode';}
-setTimeout(()=>{startCam();},200);
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
