@@ -7,14 +7,16 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
-body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw;overscroll-behavior:none}
-#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column;transition:none}
-/* FIX: camera never rotates by itself - whole screen moves together */
-#cam{width:100%;height:100%;object-fit:cover;background:#222;transform:none!important;rotate:0deg!important;image-orientation:none}
-#stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;transform:none!important}
-/* When LANDSCAPE mode, whole app rotates, not just camera */
-body.mode-landscape #app{width:100vh;height:100vw;transform:rotate(90deg) translate(0,0);transform-origin:center center;position:fixed;top:50%;left:50%;margin-top:-50vw;margin-left:-50vh}
-body.mode-portrait #app{transform:none;width:100%;height:100%;position:relative;top:auto;left:auto;margin:0}
+body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
+#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
+/* CAMERA - NO FIX, NO ROTATE, NORMAL */
+#cam{width:100%;height:100%;object-fit:cover;background:#222}
+#stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
+/* ONLY FULL SCREEN FIXES HERE */
+/* Portrait = full screen normal */
+body.mode-portrait #app{width:100%;height:100%;position:relative;transform:none;top:auto;left:auto;margin:0}
+/* Landscape = FULL SCREEN turns sideways together, camera inside follows */
+body.mode-landscape #app{width:100vh;height:100vw;transform:rotate(90deg);transform-origin:center center;position:fixed;top:50%;left:50%;margin-top:-50vw;margin-left:-50vh}
 #logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;filter:drop-shadow(2px 2px 3px #000)}
 #titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
 #ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
@@ -81,10 +83,10 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="mainScreen" class="screen" style="padding:0;justify-content:flex-start">
 <div id="orientBar" style="display:flex;gap:6px;padding:8px;background:#000;width:100%">
-<button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT - Whole Screen</button>
-<button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE - Whole Screen</button>
+<button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT - Full Screen</button>
+<button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE - Full Screen</button>
 </div>
-<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Whole screen locked, camera normal</p>
+<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Full screen only, camera normal</p>
 <div style="display:flex;width:100%;background:#111">
 <button class="studioTab on" onclick="setStudioTab('media',this)">Media</button>
 <button class="studioTab" onclick="setStudioTab('playlist',this)">Playlist</button>
@@ -128,13 +130,13 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="logoPanel" class="panel">
 <h3>Logo - OUR OWN JSTV Logo Only</h3>
-<p style="font-size:13px;color:#aaa">Only your JSTV logo is in this app. No other logo.</p>
+<p style="font-size:13px;color:#aaa">Only your JSTV logo is in this app.</p>
 <div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0">
 <svg viewBox="0 0 100 100" style="width:80px;height:80px"><polygon points="50,5 95,90 5,90" fill="none" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
 <p>JSTV - Our Own Logo</p>
 </div>
 <label>Logo Size</label><input type="range" id="logoSize" min="50" max="160" value="90" oninput="resizeLogo()">
-<label>Upload Your Own Logo (optional - replaces JSTV)</label><input type="file" id="logoFile" accept="image/*">
+<label>Upload Your Own Logo (optional)</label><input type="file" id="logoFile" accept="image/*">
 <button onclick="applyLogo()">✅ Use My Uploaded Logo</button>
 <button onclick="resetLogo()" style="background:#333">↩️ Back to JSTV Logo</button>
 <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
@@ -166,12 +168,12 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <p style="margin-top:10px">Live</p>
 <p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
 <p>Save video after streaming <span style="color:#aaa">OFF</span></p>
-<p style="margin-top:10px">Camera - FIXED, NO AUTO-ROTATE</p>
+<p style="margin-top:10px">Camera - Normal, No Fix</p>
 <p>Flip front-facing camera <span style="color:#aaa">OFF</span></p>
 <p>Focus mode: AF / MF</p>
 <p>Camera Pro ></p>
 <p>Camera Chroma Key ></p>
-<p style="margin-top:10px">Orientation: Whole screen locks - Portrait or Landscape</p>
+<p style="margin-top:10px">Orientation: Full screen only - Portrait or Landscape</p>
 <p>App version: 5.4.3 - STUDIO</p>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
@@ -218,18 +220,14 @@ let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSe
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
-async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:720}},audio:true});let v=document.getElementById('cam');v.srcObject=stream;v.style.transform='none';}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
-// FIX: Whole screen locks, camera stays normal - does NOT rotate alone
+async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
+// ONLY FULL SCREEN - NO CAMERA FIX
 function setMode(mode){
 currentMode=mode;
 const p=document.getElementById('portraitBtn'),l=document.getElementById('landscapeBtn');
-if(mode==='landscape'){document.body.className='mode-landscape';l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Whole screen locked, camera normal';document.getElementById('startingTitle').innerText='Starting in landscape mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}
-else{document.body.className='mode-portrait';p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Whole screen locked, camera normal';document.getElementById('startingTitle').innerText='Starting in portrait mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(()=>{});}catch(e){}}
-// Restart camera so it re-opens in correct whole-screen mode, not rotated
-startCam();
+if(mode==='landscape'){document.body.className='mode-landscape';l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Full screen only, camera normal';document.getElementById('startingTitle').innerText='Starting in landscape mode';}
+else{document.body.className='mode-portrait';p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Full screen only, camera normal';document.getElementById('startingTitle').innerText='Starting in portrait mode';}
 }
-// Stop phone auto-rotate from breaking camera - keep video upright
-window.addEventListener('orientationchange',()=>{setTimeout(()=>{let v=document.getElementById('cam');if(v)v.style.transform='none';},200);});
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
 function switchScreen(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
@@ -261,7 +259,7 @@ function closeChannels(){document.getElementById('channelsPopup').style.display=
 function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').classList.add('show');setTimeout(()=>{document.getElementById('startingScreen').classList.remove('show');document.getElementById('countScreen').classList.add('show');setTimeout(()=>{document.getElementById('countScreen').classList.remove('show');startLive();},1000);},2000);}
 function cancelStarting(){document.getElementById('startingScreen').classList.remove('show');}
 function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
-function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
 try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
 </script>
 </body>
