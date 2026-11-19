@@ -1,1 +1,29 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Permissions - JSTV</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+<h2>Permissions</h2>
+<p>We need Camera & Mic to go LIVE</p>
+<button class="btn" onclick="allow()">OK - ALLOW</button>
+<a class="btn2" href="login.html">Next</a>
+<a class="btn2" href="index.html">Back</a>
+</div>
+<script>
+async function allow(){
+  try{
+    await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    alert('Allowed! Tap Next');
+    location.href='login.html';
+  }catch(e){
+    alert('Please Allow Camera + Mic - Tap lock icon at top');
+  }
+}
+</script>
+</body>
+</html>
