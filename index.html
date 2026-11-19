@@ -28,8 +28,29 @@ input,select{width:100%;padding:12px;border-radius:10px;background:#222;color:#f
 .overlay2{display:none;position:fixed;inset:0;background:#111;z-index:60;padding:20px;overflow-y:auto}
 .row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #222}
 .badge{background:#00ff88;color:#000;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:bold}
-</style>
-</head>
+</style>/* LOCK SCREEN - NO LEFT/RIGHT MOVE */
+html,body{overflow:hidden !important;touch-action:pan-y !important;overscroll-behavior:none !important;position:fixed;width:100%;height:100%}
+.page{overflow:hidden !important;touch-action:pan-y !important;transform:none !important}
+#cam{transform:none !important;touch-action:none !important}
+</head><script>
+/* SWIPE = NEXT / PREV PAGE, NOT MOVE SCREEN */
+let sx=0, sy=0;
+document.addEventListener('touchstart',e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+document.addEventListener('touchend',e=>{
+  let dx=e.changedTouches[0].clientX-sx;
+  let dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)<80 || Math.abs(dy)>60) return; // must be clear left/right swipe
+  // Find current visible page
+  let pages=[...document.querySelectorAll('.page')];
+  let cur=pages.findIndex(p=>p.style.display!=='none' && getComputedStyle(p).display!=='none');
+  if(cur<0) cur=0;
+  if(dx<-80){ // swipe LEFT = NEXT
+    if(cur<pages.length-1){ pages[cur].style.display='none'; pages[cur+1].style.display='block'; }
+  } else if(dx>80){ // swipe RIGHT = BACK
+    if(cur>0){ pages[cur].style.display='none'; pages[cur-1].style.display='block'; }
+  }
+},{passive:true});
+</script>
 <body>
 
 <!-- ===== V1: SPLASH ===== -->
