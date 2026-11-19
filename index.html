@@ -97,14 +97,29 @@ async function askPerm(){
 let mode='live', facing='user', stream=null, src='cam';
 function setMode(m,el){ mode=m; document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
 function setSrc(s,el){ src=s; document.querySelectorAll('.row button').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+let cams=[], camIdx=0;
 async function startCam(){
   try{
     if(stream) stream.getTracks().forEach(t=>t.stop());
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:facing}},audio:true});
+    let devices=await navigator.mediaDevices.enumerateDevices();
+    cams=devices.filter(d=>d.kind==='videoinput');
+    if(cams.length===0) throw new Error('No camera found');
+    // camIdx 0 = Front, 1 = Back (on most Androids)
+    let devId=cams[camIdx % cams.length].deviceId;
+    stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:devId}},audio:true});
     document.getElementById('cam').srcObject=stream;
   }catch(e){
-    try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true}); document.getElementById('cam').srcObject=stream; }
-    catch(e2){ console.log(e2); }
+    // Fallback - simple
+    try{ stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('cam').srcObject=stream; }
+    catch(e2){ alert('Camera blocked: '+e2.message+' - Tap lock icon at top and Allow Camera'); }
+  }
+}
+function flip(){
+  if(cams.length>1){ camIdx=(camIdx+1)%cams.length; }
+  else { camIdx=camIdx===0?1:0; }
+  startCam();
+  alert(camIdx===0?'Front Camera - You':'Back Camera - Church - Cam '+(camIdx+1)+' of '+cams.length);
+}
   }
 }
 function flip(){ facing=facing==='user'?'environment':'user'; startCam(); alert(facing==='user'?'Front Camera - You':'Back Camera - Church'); }
