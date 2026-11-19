@@ -1,162 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>JSTV Studio</title>
-<link rel="icon" href="jstv_logo (1).png">
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial;height:100%;overflow:hidden}
-#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000}
-#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .25s}
-.top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
-.icon{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:20px;border:none;color:#fff}
-.icon.green{background:#1a7a2a}
-.overlay{position:absolute;touch-action:none;z-index:15}
-#logoBox{top:62px;left:12px;width:100px}
-#logoBox img{width:100%;border-radius:12px;display:block}
-#titleBox{top:180px;left:12px;right:12px;text-align:center;font-size:30px;font-weight:900;text-shadow:0 2px 10px #000}
-#loopBox{top:225px;left:12px;background:#FF0000;padding:7px 12px;border-radius:18px;font-weight:900;font-size:15px}
-#tickerWrap{position:absolute;left:0;right:0;bottom:165px;overflow:hidden;background:rgba(0,0,0,.6);padding:9px 0;z-index:15}
-#ticker{white-space:nowrap;display:inline-block;animation:scroll 15s linear infinite;font-size:19px;font-weight:bold;color:#FFD700}
-@keyframes scroll{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
-.modes{position:fixed;bottom:125px;left:0;right:0;display:flex;justify-content:center;z-index:20}
-.modes-in{background:rgba(0,0,0,.65);border-radius:30px;padding:4px;display:flex}
-.modes-in button{border:none;padding:9px 16px;border-radius:24px;background:transparent;color:#ccc;font-size:15px;font-weight:bold}
-.modes-in button.on{background:#fff;color:#000}
-.ready-wrap{position:fixed;bottom:70px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:20px;z-index:20}
-.ready{background:#fff;color:#000;border:none;padding:14px 44px;border-radius:30px;font-size:20px;font-weight:900}
-.small-btn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:18px}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);display:flex;justify-content:space-around;padding:14px 5px 10px;z-index:20}
-.bottom button{background:none;border:none;color:#888;font-size:15px;font-weight:bold}
-.bottom button.on{color:#fff}
-#panel{position:fixed;left:0;right:0;bottom:0;background:#111;padding:16px;border-radius:20px 20px 0 0;z-index:40;display:none;max-height:78vh;overflow:auto}
-#panel input{width:100%;padding:14px;margin:6px 0;border-radius:10px;border:1px solid #333;background:#222;color:#fff;font-size:16px}
-#panel label{font-size:13px;color:#FFD700;font-weight:bold}
-.close{float:right;background:#333;color:#fff;border:none;padding:8px 14px;border-radius:10px}
-.btn{width:100%;background:#FFD700;color:#000;border:none;padding:15px;border-radius:12px;font-weight:900;font-size:17px;margin-top:8px}
-.btn2{width:100%;background:#222;color:#fff;border:none;padding:13px;border-radius:12px;font-size:15px;margin-top:6px}
-@media (orientation: landscape){
-  #titleBox{top:70px;font-size:24px}
-  #logoBox{top:55px;width:70px}
-  #loopBox{top:105px;font-size:12px;padding:5px 10px}
-  #tickerWrap{bottom:70px}
-  .modes{bottom:62px}
-  .modes-in button{padding:6px 12px;font-size:13px}
-  .ready-wrap{bottom:28px;right:20px;left:auto}
-  .ready{padding:10px 28px;font-size:16px}
-  .bottom{padding:8px 5px 6px}
-  .top{padding:8px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
+#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column;transition:transform .2s}
+/* VIDEO AREA */
+#stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#cam{width:100%;height:100%;object-fit:cover;background:#222}
+#logoOverlay{position:absolute;top:12px;left:12px;width:70px;height:70px;object-fit:contain;display:none;z-index:10;border-radius:10px}
+#titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9;pointer-events:none}
+#ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
+#ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold}
+@keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+/* TOOLBAR */
+#toolbar{display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;flex-wrap:nowrap}
+#toolbar button{white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:13px}
+#toolbar button:active{background:#1a73e8}
+/* PANELS */
+.panel{display:none;padding:12px;background:#111;max-height:38vh;overflow-y:auto}
+.panel.active{display:block}
+.panel input,.panel select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none;background:#222;color:#fff}
+.panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
+.panel .row{display:flex;gap:8px}.panel .row button{flex:1}
+label{font-size:13px;color:#ccc}
+/* BOTTOM NAV */
+#nav{display:flex;background:#000;border-top:1px solid #333}
+#nav button{flex:1;padding:12px 2px;background:none;border:none;color:#888;font-size:11px;font-weight:bold}
+#nav button.active{color:#fff;border-top:3px solid #ff0000;background:#1a1a1a}
+/* LIVE BUTTON */
+#goLive{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);background:#ff0000;color:#fff;border:none;padding:10px 28px;border-radius:25px;font-weight:900;z-index:20}
+#goLive.live{background:#00c853}
+/* LANDSCAPE FIX - rotate whole app UI correctly */
+@media (orientation:landscape){
+  #toolbar{padding:4px}
+  #titleOverlay{font-size:18px}
 }
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-<div id="stage"><video id="cam" autoplay playsinline muted></video>
-<div id="logoBox" class="overlay"><img src="jstv_logo (1).png"></div>
-<div id="titleBox" class="overlay" contenteditable="true">JSTV LIVE</div>
-<div id="loopBox" class="overlay">🔴 LIVE • LOOP</div>
-<div id="tickerWrap"><div id="ticker">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</div></div>
-</div>
+<div id="app">
+  <div id="stage">
+    <video id="cam" autoplay playsinline muted></video>
+    <img id="logoOverlay">
+    <div id="titleOverlay">JSTV LIVE</div>
+    <div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div>
+    <button id="goLive">● GO LIVE</button>
+  </div>
 
-<div class="top">
-<button class="icon" onclick="openPanel('setup')">⋯</button>
-<button class="icon" onclick="flip()">🔄</button>
-<button class="icon" onclick="toggleEl('logoBox')">🖼️</button>
-<button class="icon" onclick="openPanel('live')">⚙️</button>
-<button class="icon green">A</button>
-</div>
+  <div id="toolbar">
+    <button onclick="showPanel('titlePanel')">➕ Title</button>
+    <button onclick="showPanel('logoPanel')">🖼️ Logo</button>
+    <button onclick="showPanel('filePanel')">📁 File</button>
+    <button onclick="showPanel('tickerPanel')">✦ Ticker</button>
+    <button onclick="switchCamera()">🔄 Flip Cam</button>
+    <button onclick="toggleMic()">🎤 Mic</button>
+  </div>
 
-<div class="modes"><div class="modes-in">
-<button onclick="setMode(this)">Screen</button>
-<button class="on" onclick="setMode(this)">Camera</button>
-<button onclick="setMode(this)">VTuber</button>
-</div></div>
+  <!-- CONNECT SCREEN -->
+  <div id="connectPanel" class="panel">
+    <h3>CONNECT</h3>
+    <label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()">
+    <label>RTMP URL (from your auth - will be auto later)</label><input id="rtmpUrl" placeholder="rtmp://...">
+    <label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key">
+    <button onclick="saveConnect()">💾 Save Connection</button>
+    <p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p>
+  </div>
 
-<div class="ready-wrap">
-<button class="small-btn" onclick="openPanel('setup')">✨</button>
-<button class="ready" id="readyBtn" onclick="goLive()">Ready</button>
-<button class="small-btn" onclick="openPanel('live')">⚙️</button>
-</div>
+  <!-- LIVE SCREEN -->
+  <div id="livePanel" class="panel active">
+    <h3>LIVE CONTROLS</h3>
+    <div class="row"><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Add Logo</button></div>
+    <div class="row"><button onclick="showPanel('filePanel')">📁 Add File / Image</button><button onclick="showPanel('tickerPanel')">✦ Edit Ticker</button></div>
+    <p style="font-size:12px;color:#aaa;margin-top:8px">Status: <span id="liveStatus">Ready - Camera On</span></p>
+  </div>
 
-<div class="bottom">
-<button onclick="openPanel('live')">CONNECT</button>
-<button class="on" onclick="goLive()">LIVE</button>
-<button onclick="openPanel('setup')">VIDEO</button>
-<button onclick="openPanel('setup')">PHOTO</button>
-</div>
+  <!-- VIDEO SCREEN -->
+  <div id="videoPanel" class="panel">
+    <h3>VIDEO - Files</h3>
+    <input type="file" id="videoFile" accept="video/*,image/*">
+    <button onclick="playFile()">▶️ Show File on Live</button>
+    <button onclick="backToCam()" style="background:#333">📷 Back to Camera</button>
+    <video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video>
+  </div>
 
-<div id="panel">
-<button class="close" onclick="closePanel()">✕ Close</button>
-<div id="panel-setup" style="display:none">
-<h3>⚙️ SETTINGS</h3>
-<label>Title</label>
-<input placeholder="Type Title" oninput="document.getElementById('titleBox').textContent=this.value">
-<label>Title Size</label><input type="range" min="18" max="60" value="30" oninput="document.getElementById('titleBox').style.fontSize=this.value+'px'">
-<label>Logo Size</label><input type="range" min="60" max="220" value="100" oninput="document.getElementById('logoBox').style.width=this.value+'px'">
-<label>Scrolling Text</label><input placeholder="Type scrolling text" oninput="document.getElementById('ticker').textContent=this.value">
-<label>Loop Text</label><input value="🔴 LIVE • LOOP" oninput="document.getElementById('loopBox').textContent=this.value">
-<button class="btn2" onclick="toggleEl('logoBox')">Show / Hide Logo</button>
-<button class="btn2" onclick="toggleEl('titleBox')">Show / Hide Title</button>
-<button class="btn2" onclick="toggleEl('loopBox')">Show / Hide Loop</button>
-<button class="btn2" onclick="toggleEl('tickerWrap')">Show / Hide Scrolling Text</button>
-<p style="color:#888;font-size:13px">Hold Logo / Title / Loop and DRAG anywhere.</p>
-</div>
-<div id="panel-live" style="display:none">
-<h3>📡 LIVE SETUP</h3>
-<label>Facebook RTMP URL</label><input id="fbUrl" placeholder="rtmp://...">
-<label>Facebook Stream Key</label><input id="fbKey" placeholder="Paste FB Key">
-<label>YouTube RTMP URL</label><input id="ytUrl" value="rtmp://a.rtmp.youtube.com/live2">
-<label>YouTube Stream Key</label><input id="ytKey" placeholder="Paste YT Key">
-<label>Custom RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://your-server/live">
-<button class="btn" onclick="saveLive()">💾 Save Live Setup</button>
-<p id="saveMsg" style="color:#FFD700"></p>
-</div>
+  <!-- PHOTO SCREEN -->
+  <div id="photoPanel" class="panel">
+    <h3>PHOTO</h3>
+    <button onclick="takePhoto()">📸 Take Snapshot</button>
+    <img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none">
+    <a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a>
+  </div>
+
+  <!-- SETTINGS SCREEN -->
+  <div id="settingsPanel" class="panel">
+    <h3>SETTINGS</h3>
+    <label>Channel Name</label><input id="channelName" value="JSTV">
+    <label>Quality</label><select id="quality"><option>720p HD</option><option>1080p Full HD</option><option>480p</option></select>
+    <button onclick="saveSettings()">💾 Save Settings</button>
+    <button onclick="location.href='settings.html'" style="background:#333">⚙️ Open Full Settings Page</button>
+  </div>
+
+  <!-- POPUP PANELS -->
+  <div id="titlePanel" class="panel">
+    <h3>Add / Change Title</h3>
+    <input id="titleInput" placeholder="Type your title - e.g. JESUS IS LORD">
+    <label>Title Color</label><input type="color" id="titleColor" value="#ffffff">
+    <button onclick="applyTitle()">✅ Show Title</button>
+    <button onclick="hideTitle()" style="background:#333">❌ Hide Title</button>
+    <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
+  </div>
+  <div id="logoPanel" class="panel">
+    <h3>Add Logo</h3>
+    <input type="file" id="logoFile" accept="image/*">
+    <button onclick="applyLogo()">✅ Show Logo</button>
+    <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
+    <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
+  </div>
+  <div id="filePanel" class="panel">
+    <h3>Add File / Image Overlay</h3>
+    <input type="file" id="overlayFile" accept="image/*,video/*">
+    <button onclick="applyFile()">✅ Show File on Screen</button>
+    <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
+  </div>
+  <div id="tickerPanel" class="panel">
+    <h3>Edit Bottom Ticker</h3>
+    <input id="tickerInput" placeholder="Type ticker text">
+    <button onclick="applyTicker()">✅ Update Ticker</button>
+    <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
+  </div>
+
+  <div id="nav">
+    <button data-screen="connectPanel" onclick="switchScreen('connectPanel',this)">CONNECT</button>
+    <button data-screen="livePanel" class="active" onclick="switchScreen('livePanel',this)">LIVE</button>
+    <button data-screen="videoPanel" onclick="switchScreen('videoPanel',this)">VIDEO</button>
+    <button data-screen="photoPanel" onclick="switchScreen('photoPanel',this)">PHOTO</button>
+    <button data-screen="settingsPanel" onclick="switchScreen('settingsPanel',this)">SETTINGS</button>
+  </div>
 </div>
 
 <script>
-let stream=null,facing='user';
+let stream=null, facing='user', micOn=true;
 async function startCam(){
- try{if(stream)stream.getTracks().forEach(t=>t.stop());
- stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
- document.getElementById('cam').srcObject=stream;
- fixOrientation();
- }catch(e){}
+  try{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
+    document.getElementById('cam').srcObject=stream;
+  }catch(e){alert('Camera blocked. Allow camera permission in Chrome.');}
 }
-function flip(){facing=facing==='user'?'environment':'user';startCam();}
-function setMode(b){document.querySelectorAll('.modes-in button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
-function openPanel(w){document.getElementById('panel').style.display='block';document.getElementById('panel-setup').style.display=w==='setup'?'block':'none';document.getElementById('panel-live').style.display=w==='live'?'block':'none';}
-function closePanel(){document.getElementById('panel').style.display='none';}
-function toggleEl(id){let el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
-function saveLive(){['fbUrl','fbKey','ytUrl','ytKey','rtmpUrl'].forEach(k=>localStorage.setItem(k,document.getElementById(k).value));document.getElementById('saveMsg').textContent='✅ Saved! Ready to Go Live';document.getElementById('readyBtn').textContent='GO LIVE';}
-function goLive(){openPanel('live');}
-['fbUrl','fbKey','ytUrl','ytKey','rtmpUrl'].forEach(k=>{if(localStorage.getItem(k))document.getElementById(k).value=localStorage.getItem(k);});
-
-// FIX FOR UPSIDE DOWN - Detects Secondary (upside down) vs Primary (correct)
-function fixOrientation(){
-  let v=document.getElementById('cam');
-  let type = screen.orientation ? screen.orientation.type : '';
-  let mirror = facing==='user' ? 'scaleX(-1) ' : '';
-  // Primary = correct, Secondary = upside down, need 180 flip
-  if(type==='landscape-secondary' || type==='portrait-secondary'){
-    v.style.transform = mirror + 'rotate(180deg)';
-  } else {
-    v.style.transform = mirror + 'rotate(0deg)';
-  }
-}
-window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ fixOrientation(); startCam(); }, 400); });
-if(screen.orientation) screen.orientation.addEventListener('change', ()=>{ setTimeout(fixOrientation, 200); });
-window.addEventListener('resize', ()=>{ fixOrientation(); });
-// Also check every second - in case phone reports late
-setInterval(fixOrientation, 1000);
-
-document.querySelectorAll('.overlay').forEach(el=>{
- let sx,sy,ox,oy,drag=false;
- el.addEventListener('touchstart',e=>{drag=true;let t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=el.offsetLeft;oy=el.offsetTop;},{passive:true});
- el.addEventListener('touchmove',e=>{if(!drag)return;let t=e.touches[0];el.style.left=(ox+t.clientX-sx)+'px';el.style.top=(oy+t.clientY-sy)+'px';el.style.right='auto';},{passive:true});
- el.addEventListener('touchend',()=>drag=false);
-});
 startCam();
+function switchScreen(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function updateTitle(){ document.getElementById('titleOverlay').innerText=document.getElementById('streamTitle').value||'JSTV LIVE'; }
+function applyTitle(){ document.getElementById('titleOverlay').innerText=document.getElementById('titleInput').value; document.getElementById('titleOverlay').style.color=document.getElementById('titleColor').value; showPanel('livePanel'); }
+function hideTitle(){ document.getElementById('titleOverlay').innerText=''; }
+function applyLogo(){ const f=document.getElementById('logoFile').files[0]; if(!f) return alert('Choose logo image'); const r=new FileReader(); r.onload=e=>{ const img=document.getElementById('logoOverlay'); img.src=e.target.result; img.style.display='block'; }; r.readAsDataURL(f); showPanel('livePanel'); }
+function hideLogo(){ document.getElementById('logoOverlay').style.display='none'; }
+function applyFile(){ const f=document.getElementById('overlayFile').files[0]; if(!f) return alert('Choose file'); const r=new FileReader(); r.onload=e=>{ const img=document.getElementById('logoOverlay'); img.src=e.target.result; img.style.display='block'; img.style.width='150px'; img.style.height='auto'; }; r.readAsDataURL(f); showPanel('livePanel'); }
+function applyTicker(){ const t=document.getElementById('tickerInput').value; if(t) document.getElementById('tickerText').innerText='✦ '+t+' ✦'; showPanel('livePanel'); }
+function switchCamera(){ facing=facing==='user'?'environment':'user'; startCam(); }
+function toggleMic(){ if(!stream) return; micOn=!micOn; stream.getAudioTracks().forEach(t=>t.enabled=micOn); alert(micOn?'Mic ON':'Mic OFF'); }
+function saveConnect(){ localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value); localStorage.setItem('jstv_key',document.getElementById('streamKey').value); document.getElementById('connectStatus').innerText='✅ Saved!'; }
+function saveSettings(){ localStorage.setItem('jstv_channel',document.getElementById('channelName').value); alert('Settings Saved'); }
+function playFile(){ const f=document.getElementById('videoFile').files[0]; if(!f) return alert('Choose video'); const v=document.getElementById('filePreview'); v.src=URL.createObjectURL(f); v.style.display='block'; v.play(); }
+function backToCam(){ document.getElementById('filePreview').pause(); document.getElementById('filePreview').style.display='none'; startCam(); }
+function takePhoto(){ const v=document.getElementById('cam'); const c=document.createElement('canvas'); c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0); const img=document.getElementById('photoResult'); img.src=c.toDataURL('image/jpeg'); img.style.display='block'; const a=document.getElementById('downloadPhoto'); a.href=img.src; a.style.display='block'; }
+document.getElementById('goLive').onclick=function(){ this.classList.toggle('live'); this.innerText=this.classList.contains('live')?'● LIVE - TAP TO STOP':'● GO LIVE'; document.getElementById('liveStatus').innerText=this.classList.contains('live')?'🔴 LIVE NOW':'Ready - Camera On'; };
+// LANDSCAPE FIX - force layout refresh on rotate
+window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ document.getElementById('app').style.height='100dvh'; },300); });
+window.addEventListener('resize',()=>{ document.getElementById('app').style.height='100dvh'; });
+// Load saved
+document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';
+document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';
 </script>
 </body>
 </html>
