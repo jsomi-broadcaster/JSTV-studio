@@ -81,7 +81,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT - Full Screen</button>
 <button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE - Full Screen</button>
 </div>
-<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Full Screen - Image Always Upright</p>
+<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Full Screen - Image Always Upright - HD Camera</p>
 <div style="display:flex;width:100%;background:#111">
 <button class="studioTab on" onclick="setStudioTab('media',this)">Media</button>
 <button class="studioTab" onclick="setStudioTab('playlist',this)">Playlist</button>
@@ -208,7 +208,17 @@ let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSe
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
-async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;keepUpright();}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
+async function startCam(){
+try{
+if(stream)stream.getTracks().forEach(t=>t.stop());
+let constraints={video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}};
+if(currentMode==='landscape'){constraints.video.width={ideal:1920};constraints.video.height={ideal:1080};}
+else{constraints.video.width={ideal:1080};constraints.video.height={ideal:1920};}
+stream=await navigator.mediaDevices.getUserMedia(constraints);
+document.getElementById('cam').srcObject=stream;
+keepUpright();
+}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
+}
 function keepUpright(){
 let cam=document.getElementById('cam'); if(!cam) return;
 let angle=0;
@@ -224,9 +234,9 @@ if(screen.orientation) screen.orientation.addEventListener('change',keepUpright)
 function setMode(mode){
 currentMode=mode;
 const p=document.getElementById('portraitBtn'),l=document.getElementById('landscapeBtn');
-if(mode==='landscape'){l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Full Screen - Image Always Upright';document.getElementById('startingTitle').innerText='Starting in landscape mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}
-else{p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Full Screen - Image Always Upright';document.getElementById('startingTitle').innerText='Starting in portrait mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(()=>{});}catch(e){}}
-setTimeout(keepUpright,200);
+if(mode==='landscape'){l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Full Screen - Image Always Upright - HD Camera';document.getElementById('startingTitle').innerText='Starting in landscape mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}
+else{p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Full Screen - Image Always Upright - HD Camera';document.getElementById('startingTitle').innerText='Starting in portrait mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(()=>{});}catch(e){}}
+setTimeout(()=>{startCam();keepUpright();},200);
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
