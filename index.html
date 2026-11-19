@@ -1,110 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>JSOMI JSTV-studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSTV - Multistream</title>
 <style>
-body{margin:0;background:#000;color:#fff;font-family:Arial;text-align:center;overflow:hidden}
-#top{padding:10px;background:#111;font-weight:bold}
-#wrap{position:relative;width:100%;height:62vh;background:#000;overflow:hidden}
-video{width:100%;height:100%;object-fit:cover;background:#000}
-#live{position:absolute;top:10px;left:10px;background:red;padding:5px 10px;border-radius:20px;display:none;font-weight:bold}
-#name{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:10px}
-button{padding:12px 10px;margin:5px;border:0;border-radius:10px;font-weight:bold;font-size:14px}
-.blue{background:#2196F3;color:#fff}
-.green{background:#4CAF50;color:#fff}
-.red{background:#f44336;color:#fff}
-.orange{background:#FF9800;color:#fff}
-.gray{background:#333;color:#fff}
-.row{display:flex;flex-wrap:wrap;justify-content:center;padding:5px}
-input{padding:10px;width:90%;margin:5px;border-radius:10px;border:0}
+body{background:#0a0a0a;color:white;font-family:Arial;padding:12px}
+.card{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:12px}
+video{width:100%;border-radius:12px;background:black}
+.dest{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #333}
+input{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#222;color:white;margin:6px 0}
+button{width:100%;padding:16px;border-radius:12px;border:0;font-weight:bold;font-size:18px}
+.live{background:red;color:white}
+label{font-size:14px;color:#ccc}
 </style>
 </head>
 <body>
-<div id="top">JSOMI • JSTV-studio</div>
-<div id="wrap">
-<video id="v" autoplay playsinline muted></video>
-<div id="live">● LIVE</div>
-<div id="name">APOSTLE KEVIN</div>
+
+<h2>📺 JSTV STUDIO</h2>
+<p style="color:#aaa">One Stream - To All Platforms</p>
+
+<!-- GROUP 1: PREVIEW -->
+<div class="card">
+  <b>1. PREVIEW</b>
+  <video id="preview" autoplay muted playsinline></video>
+  <p id="status" style="color:yellow">● Ready</p>
 </div>
 
-<div class="row">
-<button class="blue" onclick="startCamera()">START CAMERA</button>
-<button class="orange" onclick="flipCamera()">FLIP CAM - BACK / FRONT</button>
-<button class="gray" onclick="toggleBeauty()">BEAUTY ON/OFF</button>
+<!-- GROUP 2: DESTINATIONS -->
+<div class="card">
+  <b>2. DESTINATIONS</b>
+  <p style="color:#aaa;font-size:13px">Tick where you want to go live. Relay sends to all at once.</p>
+
+  <div class="dest">
+    <span>📘 Facebook</span>
+    <input type="checkbox" id="fbCheck" checked style="width:22px">
+  </div>
+  <input id="fbKey" placeholder="Facebook Stream Key">
+
+  <div class="dest">
+    <span>▶️ YouTube</span>
+    <input type="checkbox" id="ytCheck" checked style="width:22px">
+  </div>
+  <input id="ytKey" placeholder="YouTube Stream Key">
+
+  <div class="dest">
+    <span>🎵 TikTok - Vertical</span>
+    <input type="checkbox" id="ttCheck" checked style="width:22px">
+  </div>
+  <input id="ttKey" placeholder="TikTok Stream Key / RTMP Key">
+
+  <label>Relay Server (From Render)</label>
+  <input id="relayURL" value="https://jstv-relay.onrender.com/rtc/v1/whip/?app=live&stream=jstv">
 </div>
 
-<div class="row">
-<button class="green" onclick="goLive()">GO LIVE</button>
-<button class="red" onclick="stopLive()">STOP LIVE</button>
-<button class="gray" onclick="toggleMic()">MIC ON/OFF</button>
+<!-- GROUP 3: SETTINGS + GO LIVE -->
+<div class="card">
+  <b>3. STREAM SETTINGS</b>
+  <label>Quality</label>
+  <select id="quality" style="width:100%;padding:10px;background:#222;color:white;border-radius:8px">
+    <option value="720">720p - Good for Free Relay</option>
+    <option value="1080">1080p - Needs Strong Internet</option>
+  </select>
+
+  <label>Shape</label>
+  <select id="shape" style="width:100%;padding:10px;background:#222;color:white;border-radius:8px;margin-top:8px">
+    <option value="vertical">Vertical 9:16 - Best for TikTok</option>
+    <option value="horizontal">Horizontal 16:9 - Best for Facebook/YouTube</option>
+  </select>
 </div>
 
-<p style="font-size:12px;color:#aaa">Hold phone STRAIGHT UP for portrait. For landscape, hold with camera on LEFT side - not right - picture will be correct.</p>
-<p id="status">READY - Tap START CAMERA</p>
+<button class="live" onclick="goLive()">🔴 GO LIVE TO ALL</button>
+<button style="background:#333;color:white;margin-top:10px" onclick="stopLive()">⏹ STOP</button>
 
 <script>
-let stream=null;
-let facing="user"; // user = front, environment = back
-let beauty=false;
-let micOn=true;
-let isLive=false;
-let v=document.getElementById("v");
-let statusEl=document.getElementById("status");
+// This is Option 2: App -> Relay -> All Platforms
+// App sends ONLY ONE stream to relay. Relay copies to 3.
+let relayURL = document.getElementById('relayURL').value;
 
-async function startCamera(){
-  try{
-    if(stream){ stream.getTracks().forEach(t=>t.stop()); }
-    statusEl.innerText="Opening camera... Allow it";
-    stream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:facing, width:{ideal:1280}, height:{ideal:720}},
-      audio:true
-    });
-    v.srcObject=stream;
-    // Front camera = mirror like selfie. Back camera = NO mirror, so not upside down
-    if(facing==="user"){ v.style.transform="scaleX(-1)"; }
-    else{ v.style.transform="none"; }
-    statusEl.innerText = facing==="user" ? "FRONT CAMERA ON - Tap FLIP for BACK" : "BACK CAMERA ON - Tap FLIP for FRONT";
-  }catch(e){
-    statusEl.innerText="Camera blocked. Go to Settings > Apps > Chrome > Camera > Allow, then reload. Error: "+e.message;
-    alert("Please Allow Camera. Go to Phone Settings > Apps > Chrome > Permissions > Camera > Allow");
-  }
+async function goLive(){
+  document.getElementById('status').innerText = "● LIVE - Sending 1 stream to Relay...";
+  document.getElementById('status').style.color = "red";
+  // Here we will connect camera to relayURL with WHIP
+  // Next step we add WHIP code
+  alert("Connected to Relay: " + relayURL + "\nFacebook: " + document.getElementById('fbCheck').checked + "\nYouTube: " + document.getElementById('ytCheck').checked + "\nTikTok: " + document.getElementById('ttCheck').checked);
 }
-
-async function flipCamera(){
-  // Switch: if front, go back. If back, go front.
-  facing = (facing==="user") ? "environment" : "user";
-  statusEl.innerText="Switching to "+(facing==="user"?"FRONT":"BACK")+"...";
-  await startCamera();
-}
-
-function toggleBeauty(){
-  beauty=!beauty;
-  v.style.filter = beauty ? "brightness(1.15) contrast(1.1) saturate(1.2) blur(0.3px)" : "none";
-  // Keep mirror if front camera
-  if(facing==="user"){ v.style.transform="scaleX(-1)"; }
-  statusEl.innerText= beauty ? "BEAUTY ON" : "BEAUTY OFF";
-}
-
-function toggleMic(){
-  micOn=!micOn;
-  if(stream){ stream.getAudioTracks().forEach(t=>t.enabled=micOn); }
-  statusEl.innerText= micOn ? "MIC ON" : "MIC MUTED";
-}
-
-function goLive(){
-  if(!stream){ alert("Tap START CAMERA first"); return; }
-  isLive=true;
-  document.getElementById("live").style.display="block";
-  statusEl.innerText="YOU ARE LIVE! People can see you.";
-}
-
 function stopLive(){
-  isLive=false;
-  document.getElementById("live").style.display="none";
-  statusEl.innerText="LIVE STOPPED";
+  document.getElementById('status').innerText = "● Stopped";
+  document.getElementById('status').style.color = "yellow";
 }
+// Camera Preview
+navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{
+  document.getElementById('preview').srcObject = s;
+});
 </script>
 </body>
 </html>
