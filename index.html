@@ -226,7 +226,7 @@ function showPass(){ document.getElementById('showEmail').innerText=document.get
 function showYT(){ document.getElementById('ytSheet').style.display='block'; }
 async function askPerm(){ try{ let s=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('cam').srcObject=s; alert("Permissions Granted"); show('p3'); }catch(e){ alert("Please Allow Camera + Mic"); show('p3'); } }
 let mode='live', facing='user', stream=null;
-async function startCam(){ try{ if(stream) stream.getTracks().forEach(t=>t.stop()); stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true}); document.getElementById('cam').srcObject=stream; }catch(e){} }
+async function startCam(){ try{ if(stream) stream.getTracks().forEach(t=>t.stop()); stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:facing}},audio:true}); document.getElementById('cam').srcObject=stream; }catch(e){ try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true}); document.getElementById('cam').srcObject=stream; }catch(e2){} } }
 startCam();
 function flip(){ facing=facing==='user'?'environment':'user'; startCam(); }
 function setSource(s){ document.querySelectorAll('.source button').forEach(b=>b.classList.remove('on')); if(s==='camera') document.getElementById('sCamera').classList.add('on'); if(s==='screen') document.getElementById('sScreen').classList.add('on'); if(s==='vtuber'){ document.getElementById('sVtuber').classList.add('on'); document.getElementById('vtuberBox').style.display='block'; } if(s==='screen') alert('JSTV Screen Share - Tap Share in browser. FREE.'); }
