@@ -199,6 +199,26 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
+let currentAngle = 0;
+function fixCamRotation(){
+  const cam = document.getElementById('cam');
+  if(!cam) return;
+  let mirror = (facing === 'user') ? -1 : 1;
+  cam.style.transform = `rotate(${-currentAngle}deg) scaleX(${mirror})`;
+  cam.style.transition = 'transform 0.2s';
+}
+function updateAngleFromScreen(){
+  try{
+    let a = 0;
+    if(screen.orientation && typeof screen.orientation.angle === 'number') a = screen.orientation.angle;
+    else if(typeof window.orientation === 'number') a = window.orientation;
+    currentAngle = a;
+  }catch(e){ currentAngle = 0; }
+  fixCamRotation();
+}
+window.addEventListener('orientationchange', ()=>{ setTimeout(updateAngleFromScreen, 300); });
+window.addEventListener('resize', ()=>{ setTimeout(updateAngleFromScreen, 200); });
+if(screen.orientation && screen.orientation.addEventListener){ screen.orientation.addEventListener('change', updateAngleFromScreen); }
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
@@ -207,7 +227,8 @@ try{
 if(stream)stream.getTracks().forEach(t=>t.stop());
 stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}});
 document.getElementById('cam').srcObject=stream;
-}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
+updateAngleFromScreen();
+}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;updateAngleFromScreen();}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
@@ -226,7 +247,7 @@ function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forE
 function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);document.getElementById('connectStatus').innerText='✅ Saved!';}
 function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
 function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
-function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');const isSide = (currentAngle===90 || currentAngle===-90 || currentAngle===270); if(isSide){c.width=v.videoHeight;c.height=v.videoWidth;}else{c.width=v.videoWidth;c.height=v.videoHeight;} let ctx=c.getContext('2d'); ctx.translate(c.width/2,c.height/2); ctx.rotate(currentAngle*Math.PI/180); ctx.scale(facing==='user'?-1:1,1); ctx.drawImage(v,-v.videoWidth/2,-v.videoHeight/2); const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
 function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
 function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
 function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
