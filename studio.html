@@ -1,134 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Studio - JSTV</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JSTV Studio - Studio</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#000;overflow:hidden}
-#app{width:100vw;height:100dvh;background:#000;color:#fff;display:flex;flex-direction:column}
-/* NO ROTATION - Image fixed, phone rotates naturally */
-#app.landscape{width:100vw;height:100dvh}
-#stage{flex:1;position:relative;background:#000;overflow:hidden}
-#cam{width:100%;height:100%;object-fit:cover;background:#111;display:block;transform:none!important}
-#titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 5px #000;z-index:10;transform:none!important}
-#logoOverlay{position:absolute;top:10px;left:10px;width:65px;height:65px;object-fit:contain;display:none;z-index:10;transform:none!important}
-#fileOverlay{position:absolute;bottom:50px;right:10px;width:130px;display:none;z-index:10;border-radius:8px;transform:none!important}
-#tickerBar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:6px;white-space:nowrap;overflow:hidden;z-index:10}
-#tickerBar span{display:inline-block;animation:scroll 12s linear infinite;color:#FFD700;font-weight:bold}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
+#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
+#cam{width:100%;height:100%;object-fit:cover;background:#222;transform:none!important}
+#logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;filter:drop-shadow(2px 2px 3px #000)}
+#titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
+#ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
+#ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold}
 @keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
-.toolBtn{background:#222;color:#fff;border:1px solid #444;padding:10px;border-radius:20px;font-size:13px;margin:3px}
-.screen{display:none}.screen.active{display:block}
-.navBtn{flex:1;padding:12px 2px;text-align:center;background:#111;color:#888;font-weight:bold;font-size:12px;text-decoration:none}
-.navBtn.on{color:#fff;background:#222;border-top:3px solid red}
-/* CLEAN FULLSCREEN WHEN LIVE - Hide all controls */
-#app.is-live #controls,#app.is-live #addBar,#app.is-live #addBoxes,#app.is-live #bottomNav,#app.is-live #topBar,#app.is-live #modeRow{display:none!important}
-#app.is-live #stage{flex:1}
-#tapHint{position:absolute;bottom:10px;left:0;right:0;text-align:center;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:20px;font-size:12px;z-index:20;display:none}
-#app.is-live #tapHint{display:block}
-#liveBadge{position:absolute;top:12px;right:12px;background:red;color:#fff;padding:5px 10px;border-radius:15px;font-weight:900;display:none;z-index:20}
-#app.is-live #liveBadge{display:block}
+.screen{display:none;height:100dvh;width:100%;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.screen.active{display:flex}
+.btn{width:100%;max-width:340px;padding:14px;margin:6px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:16px}
+.btnDark{background:#222;color:#fff;border:1px solid #444}
+input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff}
+.panel{display:none;padding:12px;background:#111;max-height:42vh;overflow-y:auto;width:100%}
+.panel.active{display:block}
+.panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
+#nav{display:flex;background:#000;border-top:1px solid #333;width:100%}
+#nav button{flex:1;padding:14px 2px;background:none;border:none;color:#888;font-size:12px;font-weight:bold}
+#nav button.active{color:#fff;border-top:3px solid #FFD700;background:#1a1a1a}
+#goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:18px}
+.modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold}
+.modeBtn.on{background:#fff;color:#000}
+#goLivePopup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:100}
+#goLivePopup.show{display:flex}
+#goLiveCard{background:#1e1e1e;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:16px}
+#goLiveCard .goBtn{background:#D4FF00;color:#000;border:none;width:100%;padding:16px;border-radius:30px;font-weight:900;font-size:18px;margin-top:12px}
+#startingScreen{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:110;text-align:center;padding:20px}
+#startingScreen.show{display:flex}
+#countScreen{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:110}
+#countScreen.show{display:flex}
+#countNum{width:110px;height:110px;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px}
+#liveTopBar{position:absolute;top:0;left:0;right:0;display:none;z-index:30;padding:8px;background:rgba(0,0,0,.4)}
+#app.is-live #liveTopBar{display:block}
+#app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel,#app.is-live #orientBar{display:none!important}
+.jstvLogo{width:90px;height:90px}
+.studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
+.studioTab.on{background:#FFD700;color:#000}
 </style>
 </head>
 <body>
 <div id="app">
-<div id="topBar" style="display:flex;justify-content:space-between;padding:10px">
-<div><b style="font-size:22px">JSTV</b> <span class="badge">LIVE READY</span></div>
-<a href="settings.html" style="color:#fff;font-size:28px;text-decoration:none">...</a>
+<div id="splashScreen" class="screen active" style="background:#000">
+<svg class="jstvLogo" viewBox="0 0 100 100"><polygon points="50,5 95,90 5,90" fill="none" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
+<div style="font-size:36px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400">Live Studio</span></div>
+<p style="color:#aaa;margin-top:8px">Powerful video production kit for creators</p>
+<p style="color:#FFD700;margin-top:12px;font-size:13px;font-weight:bold">STUDIO VERSION</p>
 </div>
-
-<div id="controls" style="display:flex;gap:6px;padding:0 8px">
-<button id="portraitBtn" onclick="setWholeScreen('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT</button>
-<button id="landscapeBtn" onclick="setWholeScreen('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE</button>
+<div id="permScreen" class="screen" style="background:#000;justify-content:flex-start;padding-top:40px">
+<div style="background:#fff;color:#000;border-radius:8px;padding:20px;max-width:340px;width:100%">
+<h3>Please grant the following permission to use JSTV app.</h3>
+<p style="margin-top:16px">1. Camera (Required)</p><p style="font-size:13px;color:#777">For live streaming, video recording, and photo shoots.</p>
+<p style="margin-top:12px">2. Microphone (Required)</p><p style="font-size:13px;color:#777">For voice recording during live streaming.</p>
+<p style="margin-top:12px">3. Notifications</p><p style="font-size:13px;color:#777">For information related to Live Streaming.</p>
+<div style="text-align:right;margin-top:10px"><button onclick="showScreen('loginScreen')" style="background:none;border:none;color:#008080;font-weight:bold;font-size:16px">OK</button></div>
 </div>
-<p class="small" id="orientStatus" style="padding:0 10px">Mode: PORTRAIT - Image fixed, no rotation</p>
-
-<div id="stage" onclick="tapStage()">
+</div>
+<div id="loginScreen" class="screen" style="background:#111">
+<svg class="jstvLogo" viewBox="0 0 100 100"><polygon points="50,5 95,90 5,90" fill="none" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
+<h2 style="font-size:28px;margin-top:8px">JSTV <span style="font-weight:400">Live Studio</span></h2>
+<p style="color:#aaa;margin:6px 0 20px">Powerful video production kit for creators</p>
+<button class="btn" onclick="loginGo()">Facebook - Continue with Facebook</button>
+<button class="btn" onclick="loginGo()">Google</button>
+<button class="btn" onclick="loginGo()">Twitch</button>
+<button class="btn" onclick="loginGo()">NAVER Cloud B2B</button>
+<p style="margin:12px;color:#aaa">OR</p>
+<button class="btn btnDark" onclick="loginGo()">Sign up with email</button>
+</div>
+<div id="mainScreen" class="screen" style="padding:0;justify-content:flex-start">
+<div id="orientBar" style="display:flex;gap:6px;padding:8px;background:#000;width:100%">
+<button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT</button>
+<button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE</button>
+</div>
+<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Image fixed, no rotation - STUDIO</p>
+<div style="display:flex;width:100%;background:#111">
+<button class="studioTab on" onclick="setStudioTab('media',this)">Media</button>
+<button class="studioTab" onclick="setStudioTab('playlist',this)">Playlist</button>
+<button class="studioTab" onclick="setStudioTab('text',this)">Text</button>
+<button class="studioTab" onclick="setStudioTab('widget',this)">Widget</button>
+</div>
+<p id="studioTabInfo" style="padding:6px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
+<div id="stage" onclick="tapStage()" style="flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%">
 <video id="cam" autoplay playsinline muted></video>
-<img id="logoOverlay"><img id="fileOverlay">
+<svg id="logoOverlay" viewBox="0 0 100 100"><polygon points="50,5 95,90 5,90" fill="rgba(0,0,0,0.5)" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
 <div id="titleOverlay">JSTV LIVE</div>
-<div id="tickerBar"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦</span></div>
-<div id="liveBadge">● LIVE 00:00</div>
-<div id="tapHint">Tap screen to show controls</div>
+<div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div>
+<div id="liveTopBar">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div>
+<button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px">End</button>
 </div>
-
-<div id="addBar" style="display:flex;flex-wrap:wrap;padding:6px">
-<button class="toolBtn" onclick="showBox('titleBox')">➕ Title</button>
-<button class="toolBtn" onclick="showBox('logoBox')">🖼️ Logo</button>
-<button class="toolBtn" onclick="showBox('fileBox')">📁 File</button>
-<button class="toolBtn" onclick="showBox('tickerBox')">✦ Ticker</button>
-<button class="toolBtn" onclick="flip()">🔄 Flip Cam</button>
+<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO</div>
 </div>
-
-<div id="addBoxes" style="padding:0 10px">
-<div id="titleBox" class="screen" style="background:#111;padding:10px;border-radius:10px"><input id="titleInput" placeholder="e.g. SUNDAY SERVICE" style="width:100%;padding:10px"><input type="color" id="titleColor" value="#ffffff"><button class="btn" onclick="applyTitle()">✅ Show Title</button><button class="btn2" onclick="hideTitle()">❌ Hide</button></div>
-<div id="logoBox" class="screen" style="background:#111;padding:10px;border-radius:10px"><input type="file" id="logoFile" accept="image/*" style="width:100%;padding:10px"><button class="btn" onclick="applyLogo()">✅ Show Logo</button><button class="btn2" onclick="hideLogo()">❌ Hide</button></div>
-<div id="fileBox" class="screen" style="background:#111;padding:10px;border-radius:10px"><input type="file" id="overlayFile" accept="image/*" style="width:100%;padding:10px"><button class="btn" onclick="applyFile()">✅ Show File</button><button class="btn2" onclick="hideFile()">❌ Hide</button></div>
-<div id="tickerBox" class="screen" style="background:#111;padding:10px;border-radius:10px"><input id="tickerInput" placeholder="Ticker text..." style="width:100%;padding:10px"><button class="btn" onclick="applyTicker()">✅ Update</button></div>
+<div style="position:absolute;bottom:70px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
+<button class="modeBtn" onclick="setSource('screen',this)">Screen</button>
+<button class="modeBtn on" onclick="setSource('camera',this)">Camera</button>
+<button class="modeBtn" onclick="setSource('vtuber',this)">VTuber</button>
 </div>
-
-<div id="modeRow" style="padding:10px">
-<button class="btn" id="goLiveBtn" onclick="toggleLive()">● GO LIVE - Full Screen</button>
-<button class="btn2" onclick="startCam()">START CAMERA AGAIN</button>
+<button id="goLive" onclick="openGoLivePopup()">Ready</button>
 </div>
-
-<div id="bottomNav" style="display:flex;background:#000;border-top:1px solid #333">
-<a href="#" onclick="showScreen('liveScreen',this);return false" class="navBtn on">LIVE</a>
-<a href="#" onclick="showScreen('shortsScreen',this);return false" class="navBtn">SHORTS</a>
-<a href="#" onclick="showScreen('recordScreen',this);return false" class="navBtn">RECORD</a>
-<a href="#" onclick="showScreen('videoScreen',this);return false" class="navBtn">VIDEO</a>
-<a href="#" onclick="showScreen('photoScreen',this);return false" class="navBtn">PHOTO</a>
-<a href="#" onclick="showScreen('settingsScreen',this);return false" class="navBtn">SETTINGS</a>
+<div id="toolbar" style="display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;width:100%">
+<button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">➕ Title</button>
+<button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🖼️ Logo</button>
+<button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">📁 File</button>
+<button onclick="showPanel('tickerPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">✦ Ticker</button>
+<button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">🎬 My Studio</button>
+<button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🔄 Flip Cam</button>
+<button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
+<button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
 </div>
-
-<div style="padding:10px">
-<div id="liveScreen" class="screen active"><p class="small">Live controls are above. Tap GO LIVE for clean full screen.</p></div>
-<div id="shortsScreen" class="screen"><h3>SHORTS</h3><p class="small">Keep in PORTRAIT for Shorts. Tap PORTRAIT button above.</p><button class="btn" onclick="setWholeScreen('portrait')">📱 Portrait for Shorts</button></div>
-<div id="recordScreen" class="screen"><h3>RECORD</h3><button class="btn" onclick="takePhoto()">📸 Take Photo</button><img id="photoResult" style="width:100%;margin-top:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button class="btn2">⬇️ Download</button></a></div>
-<div id="videoScreen" class="screen"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*" style="width:100%;padding:10px"><button class="btn" onclick="playFile()">▶️ Play</button><video id="filePreview" controls style="width:100%;display:none;margin-top:10px"></video></div>
-<div id="photoScreen" class="screen"><h3>PHOTO</h3><button class="btn" onclick="takePhoto()">📸 Snapshot</button></div>
-<div id="settingsScreen" class="screen"><h3>SETTINGS</h3><input id="streamTitle" placeholder="Stream Title" style="width:100%;padding:10px" oninput="document.getElementById('titleOverlay').innerText=this.value||'JSTV LIVE'"><a class="btn2" href="settings.html">Stream Settings - YouTube / Facebook</a><a class="btn2" href="index.html">Back Home</a></div>
+<div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
+<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
+<div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
+<div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
+<div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
+<div id="logoPanel" class="panel">
+<h3>Logo - JSTV Logo Inside</h3>
+<p style="font-size:13px;color:#aaa">Your JSTV triangle logo is already inside. It shows top-left on LIVE.</p>
+<div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0">
+<svg viewBox="0 0 100 100" style="width:80px;height:80px"><polygon points="50,5 95,90 5,90" fill="none" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
+<p>JSTV - Built-in Logo</p>
+</div>
+<label>Logo Size</label><input type="range" id="logoSize" min="50" max="160" value="90" oninput="resizeLogo()">
+<label>Upload Your Own Logo (optional)</label><input type="file" id="logoFile" accept="image/*">
+<button onclick="applyLogo()">✅ Use My Uploaded Logo</button>
+<button onclick="resetLogo()" style="background:#333">↩️ Back to Built-in JSTV Logo</button>
+<button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
+<button onclick="showLogo()" style="background:#333">👁️ Show Logo</button>
+<button onclick="showPanel('livePanel')" style="background:#333">Back</button>
+</div>
+<div id="filePanel" class="panel"><h3>Add File</h3><input type="file" id="overlayFile" accept="image/*,video/*"><button onclick="applyFile()">✅ Show File</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
+<div id="tickerPanel" class="panel"><h3>Edit Ticker</h3><input id="tickerInput" placeholder="Type ticker text"><button onclick="applyTicker()">✅ Update Ticker</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
+<div id="studioPanel" class="panel">
+<h3>🎬 My Studio - STUDIO ONLY</h3>
+<p style="font-size:13px;color:#aaa">Add Media, Playlist, Text, Widget like before.</p>
+<p style="margin-top:10px"><b>Media</b> - Add video / image / music</p>
+<input type="file" id="studioMedia" accept="video/*,image/*,audio/*">
+<button onclick="addStudioMedia()">➕ Add to Studio</button>
+<p style="margin-top:10px"><b>Playlist</b></p>
+<input id="playlistName" placeholder="Playlist name - e.g. Sunday Songs">
+<button onclick="addPlaylist()">➕ Create Playlist</button>
+<p style="margin-top:10px"><b>Text</b></p>
+<input id="studioText" placeholder="Text Here - e.g. JESUS IS LORD">
+<button onclick="applyStudioText()">✅ Show Text on Live</button>
+<p style="margin-top:10px"><b>Widget</b></p>
+<button onclick="addWidget()">➕ Add Widget - Chat / Donation / Clock</button>
+<div id="studioList" style="margin-top:10px;background:#222;padding:10px;border-radius:8px;font-size:13px">No items yet - Add your first media above</div>
+<button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
+</div>
+<div id="settingsPanel" class="panel">
+<h3>Settings</h3>
+<p style="font-size:13px;color:#aaa">My account</p><p style="font-weight:bold">Apostle Kevin Favour</p><br>
+<p>Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px">></button></p>
+<p style="margin-top:10px">Save recent live title <span style="color:#D4FF00">ON</span></p>
+<p style="margin-top:10px">My Studio settings</p>
+<p>Auto play on overlay ></p>
+<p>Mute microphone on screen saver <span style="color:#D4FF00">ON</span></p>
+<p style="margin-top:10px">Screen resolution when connected: 720P</p>
+<p>Screen bitrate when connected: 5000 kbps</p>
+<p style="margin-top:10px">Live</p>
+<p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
+<p>Save video after streaming <span style="color:#aaa">OFF</span></p>
+<p style="margin-top:10px">Camera</p>
+<p>Flip front-facing camera <span style="color:#aaa">OFF</span></p>
+<p>Focus mode: AF / MF</p>
+<p>Camera Pro ></p>
+<p>Camera Chroma Key ></p>
+<p style="margin-top:10px">Audio</p>
+<p>Use Bluetooth microphone <span style="color:#aaa">OFF</span></p>
+<p style="margin-top:10px">General</p>
+<p>Allow display above other apps <span style="color:#aaa">OFF</span></p>
+<p>Prevent screen lock while using remote control <span style="color:#D4FF00">ON</span></p>
+<p>Haptic feedback <span style="color:#aaa">OFF</span></p>
+<p style="margin-top:10px">App version: 5.4.3 - STUDIO</p>
+<button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
+</div>
+<div id="nav">
+<button onclick="switchScreen('connectPanel',this)">CONNECT</button>
+<button class="active" onclick="switchScreen('livePanel',this)">LIVE</button>
+<button onclick="switchScreen('videoPanel',this)">VIDEO</button>
+<button onclick="switchScreen('photoPanel',this)">PHOTO</button>
 </div>
 </div>
-
-<script src="app.js"></script>
+</div>
+<div id="goLivePopup">
+<div id="goLiveCard">
+<div style="display:flex;gap:10px;align-items:center">
+<svg viewBox="0 0 100 100" style="width:50px;height:50px"><polygon points="50,5 95,90 5,90" fill="none" stroke="#FFD700" stroke-width="5"/><text x="50" y="68" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">JSTV</text></svg>
+<div><b>Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:13px">Live streaming of Mtume Kevin Liyayi</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
+<button class="goBtn" onclick="confirmGoLive()">Go Live</button>
+<button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px">Cancel</button>
+</div>
+</div>
+<div id="channelsPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:20px;z-index:120">
+<h3>Add platforms</h3>
+<div style="display:flex;gap:12px;margin:14px 0">
+<div style="text-align:center"><div style="width:70px;height:70px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900">f</div><p>Facebook<br><small>Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#FF0000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">▶</div><p>YouTube<br><small>Connected</small></p></div>
+<div style="width:70px;height:70px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">+</div>
+</div>
+<h3>My channels <span style="float:right;font-size:14px">✦ Multistream OFF</span></h3>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000">● ON</span></div>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi - Facebook</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff">OFF</span></div>
+<button onclick="closeChannels()" style="margin:auto;background:#333;color:#fff;border:none;width:50px;height:50px;border-radius:50%;font-size:20px">X</button>
+</div>
+<div id="startingScreen">
+<div style="font-size:60px">📱</div>
+<h2 style="margin-top:12px">Starting in portrait mode</h2>
+<p style="color:#ccc;margin-top:8px">The screen orientation cannot be<br>rotated after broadcast has begun.</p>
+<button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px">Cancel</button>
+</div>
+<div id="countScreen"><div id="countNum">0</div></div>
 <script>
-// NO ROTATION - Image fixed, phone rotates naturally. Buttons only change label.
-function setWholeScreen(mode){
-  const pBtn=document.getElementById('portraitBtn'), lBtn=document.getElementById('landscapeBtn');
-  if(mode==='landscape'){ lBtn.style.background='#1a73e8'; pBtn.style.background='#333'; document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Image fixed, no rotation'; }
-  else{ pBtn.style.background='#1a73e8'; lBtn.style.background='#333'; document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Image fixed, no rotation'; }
-}
-// CLEAN FULL SCREEN WHEN LIVE
-let isLive=false, liveTimer=null, liveSec=0;
-function toggleLive(){
-  isLive=!isLive;
-  const app=document.getElementById('app'), btn=document.getElementById('goLiveBtn');
-  if(isLive){
-    app.classList.add('is-live');
-    btn.innerText='■ STOP LIVE - Show Controls';
-    liveSec=0; liveTimer=setInterval(()=>{ liveSec++; let m=String(Math.floor(liveSec/60)).padStart(2,'0'), s=String(liveSec%60).padStart(2,'0'); document.getElementById('liveBadge').innerText='● LIVE '+m+':'+s; },1000);
-    if(typeof goLive==='function'){ try{ goLive(); }catch(e){} }
-  }else{
-    app.classList.remove('is-live');
-    btn.innerText='● GO LIVE - Full Screen';
-    clearInterval(liveTimer);
-  }
-}
-function tapStage(){ if(isLive) toggleLive(); }
-function showBox(id){ document.querySelectorAll('#titleBox,#logoBox,#fileBox,#tickerBox').forEach(b=>b.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-function showScreen(id,el){ document.querySelectorAll('#liveScreen,#shortsScreen,#recordScreen,#videoScreen,#photoScreen,#settingsScreen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.navBtn').forEach(b=>b.classList.remove('on')); if(el) el.classList.add('on'); }
-function applyTitle(){ document.getElementById('titleOverlay').innerText=document.getElementById('titleInput').value||'JSTV LIVE'; document.getElementById('titleOverlay').style.color=document.getElementById('titleColor').value; }
-function hideTitle(){ document.getElementById('titleOverlay').innerText=''; }
-function applyLogo(){ const f=document.getElementById('logoFile').files[0]; if(!f) return alert('Choose logo'); const r=new FileReader(); r.onload=e=>{ const img=document.getElementById('logoOverlay'); img.src=e.target.result; img.style.display='block'; }; r.readAsDataURL(f); }
-function hideLogo(){ document.getElementById('logoOverlay').style.display='none'; }
-function applyFile(){ const f=document.getElementById('overlayFile').files[0]; if(!f) return alert('Choose file'); const r=new FileReader(); r.onload=e=>{ const img=document.getElementById('fileOverlay'); img.src=e.target.result; img.style.display='block'; }; r.readAsDataURL(f); }
-function hideFile(){ document.getElementById('fileOverlay').style.display='none'; }
-function applyTicker(){ const t=document.getElementById('tickerInput').value; if(t) document.getElementById('tickerText').innerText='✦ '+t+' ✦'; }
-function takePhoto(){ const v=document.getElementById('cam'); if(!v.videoWidth) return alert('Start camera first'); const c=document.createElement('canvas'); c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0); const img=document.getElementById('photoResult'); if(img){ img.src=c.toDataURL('image/jpeg'); img.style.display='block'; const a=document.getElementById('downloadPhoto'); a.href=img.src; a.style.display='block'; } }
-function playFile(){ const f=document.getElementById('videoFile').files[0]; if(!f) return alert('Choose video'); const v=document.getElementById('filePreview'); v.src=URL.createObjectURL(f); v.style.display='block'; v.play(); }
+let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+setTimeout(()=>{showScreen('permScreen');},2000);
+function loginGo(){showScreen('mainScreen');startCam();}
+async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
+function setMode(mode){const p=document.getElementById('portraitBtn'),l=document.getElementById('landscapeBtn');if(mode==='landscape'){l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Image fixed, no rotation';}else{p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Image fixed, no rotation';}}
+function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
+function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
+function switchScreen(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function updateTitle(){document.getElementById('titleOverlay').innerText=document.getElementById('streamTitle').value||'JSTV LIVE';}
+function applyTitle(){document.getElementById('titleOverlay').innerText=document.getElementById('titleInput').value;document.getElementById('titleOverlay').style.color=document.getElementById('titleColor').value;showPanel('livePanel');}
+function hideTitle(){document.getElementById('titleOverlay').innerText='';}
+function resizeLogo(){let s=document.getElementById('logoSize').value;let l=document.getElementById('logoOverlay');l.style.width=s+'px';l.style.height=s+'px';}
+function applyLogo(){const f=document.getElementById('logoFile').files[0];if(!f)return alert('Choose logo');const r=new FileReader();r.onload=e=>{let img=document.createElement('img');img.id='logoOverlay';img.src=e.target.result;img.style.cssText='position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;z-index:10';document.getElementById('logoOverlay').replaceWith(img);};r.readAsDataURL(f);showPanel('livePanel');}
+function resetLogo(){location.reload();}
+function hideLogo(){document.getElementById('logoOverlay').style.display='none';}
+function showLogo(){document.getElementById('logoOverlay').style.display='block';}
+function applyFile(){const f=document.getElementById('overlayFile').files[0];if(!f)return alert('Choose file');const r=new FileReader();r.onload=e=>{let img=document.createElement('img');img.src=e.target.result;img.style.cssText='position:absolute;top:80px;left:12px;width:150px;z-index:11';document.getElementById('stage').appendChild(img);};r.readAsDataURL(f);showPanel('livePanel');}
+function applyTicker(){const t=document.getElementById('tickerInput').value;if(t)document.getElementById('tickerText').innerText='✦ '+t+' ✦';showPanel('livePanel');}
+function switchCamera(){facing=facing==='user'?'environment':'user';startCam();}
+function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forEach(t=>t.enabled=micOn);alert(micOn?'Mic ON':'Mic OFF');}
+function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);document.getElementById('connectStatus').innerText='✅ Saved!';}
+function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
+function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
+function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
+function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
+function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
+function addWidget(){document.getElementById('studioList').innerHTML='✅ Widget Added: Chat / Clock<br>'+document.getElementById('studioList').innerHTML;}
+function openGoLivePopup(){document.getElementById('goLivePopup').classList.add('show');}
+function closeGoLivePopup(){document.getElementById('goLivePopup').classList.remove('show');}
+function showChannels(){document.getElementById('channelsPopup').style.display='flex';}
+function closeChannels(){document.getElementById('channelsPopup').style.display='none';}
+function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').classList.add('show');setTimeout(()=>{document.getElementById('startingScreen').classList.remove('show');document.getElementById('countScreen').classList.add('show');setTimeout(()=>{document.getElementById('countScreen').classList.remove('show');startLive();},1000);},2000);}
+function cancelStarting(){document.getElementById('startingScreen').classList.remove('show');}
+function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
+function tapStage(){if(isLive)stopLive();}
+try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
 </script>
 </body>
 </html>
