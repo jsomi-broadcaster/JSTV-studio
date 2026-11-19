@@ -15,7 +15,7 @@
 <input id="url" placeholder="RTMP URL - leave empty">
 
 <button class="btn" onclick="saveKey()">SAVE</button>
-<a class="btn2" href="studio.html">Back to Studio</a>
+<a class="btn2" href="index.html">Back to Studio</a>
 <a class="btn2" href="index.html">Home</a>
 <p class="small" id="saved">Not saved yet</p>
 </div>
@@ -26,7 +26,7 @@ function saveKey(){
   var v = document.getElementById('key').value;
   localStorage.setItem('jstv_key', v);
   alert('Saved!');
-  location.href='studio.html';
+  location.href='index.html';
 }
 </script>
 </body>
