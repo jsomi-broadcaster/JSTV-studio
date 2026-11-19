@@ -9,10 +9,8 @@
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
 body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 #app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
-#cam{width:100%;height:100%;object-fit:cover;background:#222}
+#cam{width:100%;height:100%;object-fit:cover;background:#222;transition:transform 0.3s}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
-body.mode-portrait #app{width:100%;height:100%}
-body.mode-landscape #app{width:100%;height:100%}
 #logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
 .jstvLogo{width:130px;height:130px;object-fit:contain;border-radius:50%}
 .jstvLogoSmall{width:60px;height:60px;object-fit:contain;border-radius:50%}
@@ -50,7 +48,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 .studioTab.on{background:#FFD700;color:#000}
 </style>
 </head>
-<body class="mode-portrait">
+<body>
 <div id="app">
 <div id="splashScreen" class="screen active" style="background:#000">
 <img src="logo.png" class="jstvLogo" alt="JSTV">
@@ -83,7 +81,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button id="portraitBtn" onclick="setMode('portrait')" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">📱 PORTRAIT - Full Screen</button>
 <button id="landscapeBtn" onclick="setMode('landscape')" style="flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:bold">🔄 LANDSCAPE - Full Screen</button>
 </div>
-<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Full Screen</p>
+<p id="orientStatus" style="padding:0 10px 6px;font-size:12px;color:#aaa;align-self:flex-start">Mode: PORTRAIT - Full Screen - Image Always Upright</p>
 <div style="display:flex;width:100%;background:#111">
 <button class="studioTab on" onclick="setStudioTab('media',this)">Media</button>
 <button class="studioTab" onclick="setStudioTab('playlist',this)">Playlist</button>
@@ -210,12 +208,25 @@ let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSe
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
-async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
+async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;keepUpright();}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
+function keepUpright(){
+let cam=document.getElementById('cam'); if(!cam) return;
+let angle=0;
+try{ if(screen.orientation && typeof screen.orientation.angle==='number') angle=screen.orientation.angle; else if(typeof window.orientation==='number') angle=window.orientation; }catch(e){}
+let fix=0;
+if(currentMode==='landscape'){ if(angle===0) fix=90; else if(angle===90) fix=0; else if(angle===180) fix=-90; else if(angle===270) fix=180; }
+else { fix=-angle; }
+cam.style.transform='rotate('+fix+'deg)';
+}
+window.addEventListener('orientationchange',()=>{setTimeout(keepUpright,100); setTimeout(keepUpright,400);});
+window.addEventListener('resize',keepUpright);
+if(screen.orientation) screen.orientation.addEventListener('change',keepUpright);
 function setMode(mode){
 currentMode=mode;
 const p=document.getElementById('portraitBtn'),l=document.getElementById('landscapeBtn');
-if(mode==='landscape'){document.body.className='mode-landscape';l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Full Screen';document.getElementById('startingTitle').innerText='Starting in landscape mode';}
-else{document.body.className='mode-portrait';p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Full Screen';document.getElementById('startingTitle').innerText='Starting in portrait mode';}
+if(mode==='landscape'){l.style.background='#1a73e8';p.style.background='#333';document.getElementById('orientStatus').innerText='Mode: LANDSCAPE - Full Screen - Image Always Upright';document.getElementById('startingTitle').innerText='Starting in landscape mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}
+else{p.style.background='#1a73e8';l.style.background='#333';document.getElementById('orientStatus').innerText='Mode: PORTRAIT - Full Screen - Image Always Upright';document.getElementById('startingTitle').innerText='Starting in portrait mode';try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(()=>{});}catch(e){}}
+setTimeout(keepUpright,200);
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
@@ -246,7 +257,7 @@ function closeChannels(){document.getElementById('channelsPopup').style.display=
 function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').classList.add('show');setTimeout(()=>{document.getElementById('startingScreen').classList.remove('show');document.getElementById('countScreen').classList.add('show');setTimeout(()=>{document.getElementById('countScreen').classList.remove('show');startLive();},1000);},2000);}
 function cancelStarting(){document.getElementById('startingScreen').classList.remove('show');}
 function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
-function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}}
 try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
 </script>
 </body>
