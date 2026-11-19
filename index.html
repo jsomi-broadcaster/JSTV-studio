@@ -3,20 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JSTV Broadcaster Studio</title>
+<title>JSTV - Permissions</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="jstv_logo (1).png">
-<link rel="apple-touch-icon" href="jstv_logo (1).png">
-<link rel="manifest" href="manifest.json">
 </head>
 <body>
-<div class="page" style="text-align:center;padding:10px">
-<img src="jstv_logo (1).png" style="width:340px;max-width:95%;margin:15px auto 5px;display:block;border-radius:25px;box-shadow:0 0 30px #FFD700">
-<h1 style="font-size:38px;line-height:1.1;margin:10px 0 0">JSTV<br>BROADCASTER STUDIO</h1>
-<p style="color:#FFD700;font-size:20px;font-weight:bold;margin:8px 0 20px">LIVE • PREACH • REACH THE WORLD</p>
-<a class="btn" href="permissions.html" style="font-size:22px;padding:18px">▶ START STUDIO</a>
-<a class="btn2" href="studio.html" style="font-size:18px">Open Studio Direct</a>
-<p class="small">Admin Studio for JSTV Creator Control</p>
+<div class="page">
+<img src="jstv_logo (1).png" class="logo-med">
+<h2>Permissions</h2>
+<p>We need Camera & Mic to go LIVE</p>
+<p id="msg" class="small" style="color:#FFD700;font-size:16px;min-height:22px"></p>
+<button class="btn" onclick="ask()">OK - ALLOW</button>
+<a class="btn2" href="login.html">Next →</a>
+<a class="btn2" href="index.html">Back</a>
 </div>
+<script>
+async function ask(){
+  try{
+    let s = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    s.getTracks().forEach(t=>t.stop());
+    document.getElementById('msg').textContent = '✅ Allowed! Tap Next';
+  }catch(e){
+    document.getElementById('msg').textContent = 'Please tap Allow in browser';
+  }
+}
+</script>
 </body>
 </html>
