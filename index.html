@@ -4,145 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JSTV Studio</title>
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial;font-size:19px;line-height:1.5}
-html,body{overflow:hidden;touch-action:pan-y;position:fixed;width:100%;height:100%}
-.page{display:none;width:100%;height:100%;padding:24px;text-align:center;overflow-y:auto}
-.page.show{display:block}
-.logo{font-size:64px;font-weight:bold;color:gold;margin-top:50px}
-h1{font-size:38px;margin:10px 0}
-h2{font-size:32px;margin:16px 0}
-p{font-size:19px}
-.btn{display:block;width:95%;max-width:360px;margin:18px auto;padding:20px;background:gold;color:#000;border:0;border-radius:30px;font-size:22px;font-weight:bold}
-.btn2{display:block;width:95%;max-width:360px;margin:12px auto;padding:16px;background:#222;color:#fff;border:1px solid #555;border-radius:20px;font-size:20px}
-input{width:95%;max-width:360px;padding:18px;margin:10px auto;display:block;border-radius:12px;border:1px solid #555;background:#111;color:#fff;font-size:20px}
-#cam{width:100%;height:55vh;object-fit:cover;background:#111;border-radius:14px}
-.top{display:flex;justify-content:space-between;align-items:center}
-.tabs button{border:0;background:transparent;color:#aaa;padding:14px 16px;font-size:20px}
-.tabs button.on{color:#fff;font-weight:bold}
-.badge{background:#00ff88;color:#000;padding:6px 12px;border-radius:12px;font-size:16px}
-.row{display:flex;justify-content:space-between;gap:8px}
-.row button{flex:1;padding:16px;background:#222;color:#fff;border:1px solid #555;border-radius:12px;font-size:19px}
-.row button.on{background:gold;color:#000;font-weight:bold}
-.small{font-size:17px;color:#999}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div id="p1" class="page show">
+<div class="page">
 <div class="logo">JSTV</div>
 <h1>JSTV</h1>
-<p style="color:#ccc">Jesus Saves TV - Live Studio</p>
+<p>Jesus Saves TV - Live Studio</p>
 <p style="color:gold;font-size:22px">Jesus Is Lord</p>
-<button class="btn" onclick="go('p2')">START</button>
-<p class="small">If START fails, SWIPE LEFT</p>
+<a class="btn" href="permissions.html">START</a>
+<p class="small">Swipe or Tap START to continue</p>
 </div>
-
-<div id="p2" class="page">
-<h2>Permissions</h2>
-<p style="color:#ccc">We need Camera & Mic to go LIVE</p>
-<button class="btn" onclick="askPerm()">OK - ALLOW</button>
-<button class="btn2" onclick="go('p3')">Next</button>
-<button class="btn2" onclick="go('p1')">Back</button>
-</div>
-
-<div id="p3" class="page">
-<h2>Login</h2>
-<input id="phone" placeholder="Phone / Email">
-<input id="code" placeholder="Code - type 1234">
-<button class="btn" onclick="go('p4')">Verify & Done</button>
-<button class="btn2" onclick="go('p2')">Back</button>
-</div>
-
-<div id="p4" class="page">
-<div class="top">
-<div><b style="font-size:22px">JSTV</b> <span class="badge">LIVE READY</span></div>
-<div><button onclick="go('p3')" style="background:transparent;color:#fff;border:0;font-size:28px">...</button></div>
-</div>
-<video id="cam" autoplay playsinline muted></video>
-<button onclick="flip()" style="width:95%;max-width:360px;margin:12px auto;display:block;background:yellow;color:#000;border:0;padding:18px;border-radius:20px;font-weight:bold;font-size:21px">FLIP - Front / Back</button>
-<div>
-<div class="tabs">
-<button class="on" onclick="setMode('live',this)">Live</button>
-<button onclick="setMode('shorts',this)">Shorts</button>
-<button onclick="setMode('record',this)">Record</button>
-</div>
-<div class="row" style="margin-top:8px">
-<button class="on" onclick="setSrc('cam',this)">Camera</button>
-<button onclick="setSrc('screen',this)">Screen</button>
-<button onclick="setSrc('both',this)">Both</button>
-</div>
-<button class="btn" onclick="goLive()">GO LIVE / Ready</button>
-<button class="btn2" onclick="startCam()">START CAMERA AGAIN</button>
-<button class="btn2" onclick="go('p1')">Back to Home</button>
-<p class="small">Swipe = Change screen. Screen will NOT move.</p>
-</div>
-</div>
-
-<script>
-function go(id){
-try{
-var all=document.querySelectorAll('.page');
-for(var i=0;i<all.length;i++){ all[i].classList.remove('show'); all[i].style.display='none'; }
-var el=document.getElementById(id);
-el.classList.add('show'); el.style.display='block';
-if(id==='p4'){ startCam(); }
-}catch(e){ alert('Go error '+e.message); }
-}
-async function askPerm(){
-try{
-await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-alert('Allowed! Tap Next'); go('p3');
-}catch(e){ alert('Please Allow Camera + Mic'); }
-}
-var mode='live';
-var stream=null;
-var cams=[];
-var camIdx=0;
-function setMode(m,el){
-mode=m;
-document.querySelectorAll('.tabs button').forEach(function(b){b.classList.remove('on')});
-el.classList.add('on');
-}
-function setSrc(s,el){
-document.querySelectorAll('.row button').forEach(function(b){b.classList.remove('on')});
-el.classList.add('on');
-}
-async function startCam(){
-try{
-if(stream){ stream.getTracks().forEach(function(t){t.stop()}); }
-var tmp=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-tmp.getTracks().forEach(function(t){t.stop()});
-var devices=await navigator.mediaDevices.enumerateDevices();
-cams=devices.filter(function(d){return d.kind==='videoinput'});
-if(cams.length===0){ alert('No camera found'); return; }
-var devId=cams[camIdx % cams.length].deviceId;
-stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:devId}},audio:true});
-document.getElementById('cam').srcObject=stream;
-}catch(e){ alert('Camera: '+e.message+' - Tap lock icon, Allow Camera'); }
-}
-function flip(){
-if(cams.length>1){ camIdx=(camIdx+1)%cams.length; }
-else{ camIdx=camIdx===0?1:0; }
-startCam();
-if(camIdx===0){ alert('Front Camera - You'); }
-else{ alert('Back Camera - Church'); }
-}
-function goLive(){ alert('You are LIVE - '+mode); }
-var sx=0;
-var sy=0;
-var order=['p1','p2','p3','p4'];
-document.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
-document.addEventListener('touchend',function(e){
-var dx=e.changedTouches[0].clientX-sx;
-var dy=e.changedTouches[0].clientY-sy;
-if(Math.abs(dx)<80 || Math.abs(dy)>60){ return; }
-var curEl=document.querySelector('.page.show');
-var cur=order.indexOf(curEl?curEl.id:'p1');
-if(dx<-80 && cur<order.length-1){ go(order[cur+1]); }
-else if(dx>80 && cur>0){ go(order[cur-1]); }
-},{passive:true});
-</script>
 </body>
 </html>
