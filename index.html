@@ -1,269 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#000000">
-<title>JSTV Studio - FREE - All Vs</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>JSTV Studio</title>
 <style>
-*{box-sizing:border-box;margin:0} body{background:#000;color:#fff;font-family:Arial;overflow-x:hidden}
-.page{display:none;min-height:100vh;padding:20px} .show{display:block}
-.logo{width:90px;height:90px;background:gold;border-radius:50%;margin:30px auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:bold}
-.btn{width:100%;padding:15px;border-radius:30px;border:0;background:#fff;color:#000;font-weight:bold;margin:8px 0;font-size:16px}
-.btn-dark{background:#222;color:#fff} .btn-blue{background:#8ab4f8}
-.card{background:#1a1a1a;border-radius:14px;padding:14px;margin:10px 0;text-align:left}
-input,select{width:100%;padding:12px;border-radius:10px;background:#222;color:#fff;border:1px solid #333;margin:6px 0}
-.big{width:100%;padding:16px;background:red;color:#fff;border:0;border-radius:14px;font-size:18px;font-weight:bold}
-#cam{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.top{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;padding:14px;z-index:10}
-.icon{width:42px;height:42px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px}
-.source{position:fixed;bottom:145px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border-radius:30px;padding:6px;display:flex;gap:4px;z-index:10}
-.source button{border:0;background:transparent;color:#aaa;padding:8px 14px;border-radius:20px;font-weight:bold}
-.source button.on{background:#fff;color:#000}
-.center{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:10}
-.ready{background:#fff;color:#000;border:0;padding:14px 40px;border-radius:30px;font-size:18px;font-weight:bold}
-.tabs{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:14px 10px 22px;background:linear-gradient(transparent,rgba(0,0,0,.85));z-index:10}
-.tabs button{border:0;background:transparent;color:#888;font-size:15px;font-weight:bold}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden !important;touch-action:pan-y !important;overscroll-behavior:none !important;position:fixed;width:100%;height:100%}
+.page{display:none;width:100%;height:100%;overflow:hidden;touch-action:pan-y;padding:20px;text-align:center}
+.page.show{display:block}
+.logo{font-size:48px;font-weight:bold;color:gold;text-align:center;margin-top:60px}
+.btn{display:block;width:90%;max-width:320px;margin:14px auto;padding:16px;background:gold;color:#000;border:0;border-radius:30px;font-size:18px;font-weight:bold}
+.btn2{display:block;width:90%;max-width:320px;margin:10px auto;padding:12px;background:#222;color:#fff;border:1px solid #444;border-radius:20px}
+input{width:90%;max-width:320px;padding:14px;margin:8px auto;display:block;border-radius:12px;border:1px solid #333;background:#111;color:#fff;font-size:16px}
+#cam{width:100%;height:62vh;object-fit:cover;background:#111;border-radius:14px;touch-action:none}
+.top{display:flex;justify-content:space-between;align-items:center;padding:6px}
+.tabs button{border:0;background:transparent;color:#aaa;padding:10px 12px;font-size:16px}
 .tabs button.on{color:#fff}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:50;padding:20px;overflow-y:auto}
-.overlay2{display:none;position:fixed;inset:0;background:#111;z-index:60;padding:20px;overflow-y:auto}
-.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #222}
-.badge{background:#00ff88;color:#000;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:bold}
-</style>/* LOCK SCREEN - NO LEFT/RIGHT MOVE */
-html,body{overflow:hidden !important;touch-action:pan-y !important;overscroll-behavior:none !important;position:fixed;width:100%;height:100%}
-.page{overflow:hidden !important;touch-action:pan-y !important;transform:none !important}
-#cam{transform:none !important;touch-action:none !important}
-</head><script>
-/* SWIPE = NEXT / PREV PAGE, NOT MOVE SCREEN */
-let sx=0, sy=0;
-document.addEventListener('touchstart',e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
-document.addEventListener('touchend',e=>{
-  let dx=e.changedTouches[0].clientX-sx;
-  let dy=e.changedTouches[0].clientY-sy;
-  if(Math.abs(dx)<80 || Math.abs(dy)>60) return; // must be clear left/right swipe
-  // Find current visible page
-  let pages=[...document.querySelectorAll('.page')];
-  let cur=pages.findIndex(p=>p.style.display!=='none' && getComputedStyle(p).display!=='none');
-  if(cur<0) cur=0;
-  if(dx<-80){ // swipe LEFT = NEXT
-    if(cur<pages.length-1){ pages[cur].style.display='none'; pages[cur+1].style.display='block'; }
-  } else if(dx>80){ // swipe RIGHT = BACK
-    if(cur>0){ pages[cur].style.display='none'; pages[cur-1].style.display='block'; }
-  }
-},{passive:true});
-</script>
+.badge{background:#00ff88;color:#000;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:bold}
+.row{display:flex;justify-content:space-between;gap:8px}
+.row button{flex:1;padding:12px;background:#222;color:#fff;border:1px solid #444;border-radius:12px}
+.row button.on{background:gold;color:#000}
+.center{text-align:center}
+</style>
+</head>
 <body>
 
 <!-- ===== V1: SPLASH ===== -->
 <div id="p1" class="page show">
   <div class="logo">JSTV</div>
   <h1 style="text-align:center">JSTV</h1>
-  <p style="text-align:center;color:#aaa">Jehovah Shammah TV<br>Broadcast Studio</p>
-  <p style="text-align:center;color:gold;margin-top:10px">FREE - Multistream FREE - All Vs in One</p>
-  <button class="btn" onclick="show('p2')">START →</button>
-  <p style="text-align:center;color:#666;font-size:12px;margin-top:20px">V1 Splash • V2 Camera • V3 Login • V4 Settings • V5 Channels • V6 Live</p>
+  <p style="text-align:center;color:#aaa">Jesus Saves TV - Live Studio</p>
+  <p style="text-align:center;color:gold;margin:10px">Jesus Is Lord</p>
+  <button class="btn" onclick="show('p2')">START</button>
+  <p style="text-align:center;color:#666;font-size:12px">Swipe Left = Next &nbsp;|&nbsp; Swipe Right = Back</p>
 </div>
 
-<!-- ===== V1: PERMISSIONS ===== -->
+<!-- ===== V2: PERMISSIONS ===== -->
 <div id="p2" class="page">
-  <h2>Please grant permission<br>to use JSTV app.</h2>
-  <div class="card"><b>1. Camera (Required)</b><p style="color:#aaa">For live streaming</p><b>2. Microphone (Required)</b><p style="color:#aaa">For voice</p><b>3. Notifications</b><p style="color:#aaa">For live info</p></div>
+  <h2>Permissions</h2>
+  <p style="color:#aaa">We need Camera & Mic to go LIVE</p>
   <button class="btn" onclick="askPerm()">OK - ALLOW</button>
-  <button class="btn btn-dark" onclick="show('p3')">Skip For Now</button>
+  <button class="btn2" onclick="show('p3')">Next</button>
+  <button class="btn2" onclick="show('p1')">Back</button>
 </div>
 
-<!-- ===== V3: LOGIN ===== -->
+<!-- ===== V3: LOGIN / VERIFY ===== -->
 <div id="p3" class="page">
-  <div class="logo" style="width:60px;height:60px;font-size:18px;margin:10px 0">JSTV</div>
-  <h1 style="font-size:38px">Sign in</h1><p>to continue to <b style="color:#4aa8ff">JSTV Studio</b></p>
-  <label>Email or phone</label><input id="jstvEmail" placeholder="Email or phone">
-  <p style="color:#4aa8ff;font-size:14px">Forgot email?</p>
-  <button class="btn btn-blue" style="width:auto;float:right;border-radius:20px;padding:12px 28px" onclick="showPass()">Next</button>
-  <br><br><button class="btn btn-dark" onclick="show('addPlatforms')">Continue as Guest →</button>
+  <h2>Login</h2>
+  <input id="phone" placeholder="Phone / Email">
+  <input id="code" placeholder="Code - type 1234">
+  <button class="btn" onclick="show('p4')">Verify & Done</button>
+  <button class="btn2" onclick="show('p2')">Back</button>
+  <p style="color:#666;font-size:12px">For test, tap Verify & Done</p>
 </div>
 
-<div id="passPage" class="page">
-  <h1>Welcome</h1><p>👤 <span id="showEmail"></span></p>
-  <label>Enter your password</label><input type="password" placeholder="••••••••••">
-  <p style="color:#4aa8ff">Forgot password?</p>
-  <button class="btn btn-blue" style="width:auto;float:right;border-radius:20px" onclick="show('twoStep')">Next</button>
-</div>
-
-<div id="twoStep" class="page">
-  <h1>2-Step Verification</h1><p style="color:#ccc">To keep your account safe, JSTV wants to make sure it's really you</p>
-  <div class="card"><p>📱 Tap <b>Yes</b> on your phone</p><hr><p>📩 Get code at ••• ••••76</p><hr><p>🔑 Use phone for security code</p><hr><p>❓ Try another way</p></div>
-  <button class="btn" onclick="show('addPlatforms')">Verify & Continue →</button>
-</div>
-
-<!-- ===== V3 + V5: ADD PLATFORMS ===== -->
-<div id="addPlatforms" class="page">
-  <h2>Add platforms</h2><p style="color:#aaa">Broadcast through JSTV by connecting a platform.</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px">
-    <div class="card" style="text-align:center">📘<br>Facebook<br><small style="color:yellow">Connected</small></div>
-    <div class="card" style="text-align:center" onclick="showYT()">▶️<br>YouTube</div>
-    <div class="card" style="text-align:center">💜<br>Twitch</div>
-    <div class="card" style="text-align:center">KICK<br>KICK</div>
-    <div class="card" style="text-align:center">📸<br>Instagram</div>
-    <div class="card" style="text-align:center">🎵<br>TikTok</div>
-    <div class="card" style="text-align:center">▶️<br>NAVER TV</div>
-    <div class="card" style="text-align:center">🟢<br>BAND</div>
-    <div class="card" style="text-align:center">☁️<br>NAVER Cloud</div>
-  </div>
-  <div id="ytSheet" style="display:none;background:#222;border-radius:16px;padding:16px;margin-top:10px">
-    <h3>YouTube</h3>
-    <button class="btn" onclick="openChannels()">▶️ Connect YouTube</button>
-    <button class="btn btn-dark" onclick="openChannels()">+ YouTube Custom RTMP</button>
-  </div>
-  <button class="big" onclick="show('p4')">Done → Go To Studio</button>
-</div>
-
-<!-- ===== V2: MAIN CAMERA SCREEN ===== -->
-<div id="p4" class="page" style="padding:0">
-  <video id="cam" autoplay muted playsinline></video>
-  <div style="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:6px 14px;border-radius:20px;z-index:10;font-size:13px" id="liveStatus">● Ready - FREE</div>
+<!-- ===== V4: STUDIO ===== -->
+<div id="p4" class="page">
   <div class="top">
-    <div style="display:flex;gap:10px"><div class="icon" onclick="openQuick()">...</div><div class="icon" onclick="flip()">🔄</div></div>
-    <div style="display:flex;gap:10px"><div class="icon" onclick="alert('JSTV Beauty - FREE')">✨</div><div class="icon" style="background:#1a7a3a" onclick="openSettings()">A</div></div>
+    <div><b>JSTV</b> <span class="badge">LIVE READY</span></div>
+    <div><button onclick="show('p3')" style="background:transparent;color:#fff;border:0;font-size:22px">...</button></div>
   </div>
-  <div class="source">
-    <button id="sScreen" onclick="setSource('screen')">Screen</button>
-    <button id="sCamera" class="on" onclick="setSource('camera')">Camera</button>
-    <button id="sVtuber" onclick="setSource('vtuber')">VTuber</button>
-  </div>
+
+  <video id="cam" autoplay playsinline muted></video>
+
+  <!-- BIG FLIP BUTTON - CANNOT MISS -->
+  <button onclick="flip()" style="width:90%;max-width:320px;margin:10px auto;display:block;background:yellow;color:#000;border:0;padding:12px 22px;border-radius:20px;font-weight:bold;font-size:16px">🔄 FLIP - Front / Back</button>
+
   <div class="center">
-    <div class="icon" onclick="openStudio()">⊞</div>
-    <button class="ready" id="mainBtn" onclick="mainAction()">Ready</button>
-    <div class="icon" onclick="openChannels()">📺</div>
+    <div class="tabs">
+      <button class="on" onclick="setMode('live',this)">Live</button>
+      <button onclick="setMode('shorts',this)">Shorts</button>
+      <button onclick="setMode('record',this)">Record</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="on" onclick="setSrc('cam',this)">Camera</button>
+      <button onclick="setSrc('screen',this)">Screen</button>
+      <button onclick="setSrc('both',this)">Both</button>
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="goLive()">● GO LIVE / Ready</button>
+    <button class="btn2" onclick="show('p1')">Back to Home</button>
+    <p style="color:#666;font-size:12px">Swipe Left / Right to change screen - screen will NOT move</p>
   </div>
-  <div class="tabs">
-    <button id="tConnect" onclick="setMode('connect')">CONNECT</button>
-    <button id="tLive" class="on" onclick="setMode('live')">LIVE</button>
-    <button id="tVideo" onclick="setMode('video')">VIDEO</button>
-    <button id="tPhoto" onclick="setMode('photo')">PHOTO</button>
-  </div>
-</div>
-
-<!-- CONNECT + VTUBER -->
-<div id="connectBox" class="overlay">
-  <h2>Scan the QR code</h2><p style="color:#ccc">to connect to the PC or remote control.</p>
-  <div style="width:200px;height:200px;border:6px solid yellow;margin:20px auto;display:flex;align-items:center;justify-content:center;text-align:center">JSTV<br>QR CODE<br>Linking Later</div>
-  <button class="btn btn-dark" onclick="closeBoxes()">✕ Close</button>
-</div>
-<div id="vtuberBox" class="overlay">
-  <h3 style="margin-top:60px">Select your avatar type</h3>
-  <button class="btn" style="background:#2ab0ff" onclick="alert('JSTV 2D Avatar - FREE')">2D Avatar 👦</button>
-  <button class="btn" style="background:#d04aff" onclick="alert('JSTV 3D Avatar - FREE')">3D Avatar 👧</button>
-  <button class="btn btn-dark" onclick="closeBoxes()">✕ Close</button>
-</div>
-
-<!-- ===== V4: QUICK SETTINGS ===== -->
-<div id="quickPanel" class="overlay">
-  <div style="display:flex;justify-content:space-around">
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">⚡</div><small>Flash off</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">🎤</div><small>Mic on</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px">📷</div><small>Camera on</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px">⛶</div><small>View full</small></div>
-  </div>
-  <div class="card">🔍 I'll find the feature you need →</div>
-  <b style="color:#888">Live</b>
-  <div class="row">Use live status indicator <span style="color:yellow">● ON</span></div>
-  <div class="row">Save video after streaming <span>○ OFF</span></div>
-  <div class="row">Remote control <span>›</span></div>
-  <b style="color:#888">Camera</b>
-  <div class="row">Flip front camera <span>○ OFF</span></div>
-  <div class="row">Focus mode <span style="background:#fff;color:#000;padding:4px 10px;border-radius:20px">AF | MF</span></div>
-  <div class="row" onclick="alert('JSTV Camera Pro - FREE')">Camera Pro <span>›</span></div>
-  <div class="row" onclick="alert('JSTV Chroma Key - FREE')">Camera Chroma Key <span>›</span></div>
-  <b style="color:#888">Audio</b>
-  <div class="row">Use Bluetooth mic <span>○ OFF</span></div>
-  <button class="btn" onclick="document.getElementById('quickPanel').style.display='none'">Close</button>
-</div>
-
-<!-- ===== V4: FULL SETTINGS ===== -->
-<div id="settingsPage" class="overlay2">
-  <h2 style="text-align:center">Settings <span style="float:right" onclick="document.getElementById('settingsPage').style.display='none'">✕</span></h2>
-  <p style="color:#666">My account</p>
-  <div style="display:flex;align-items:center;gap:12px"><div style="width:54px;height:54px;background:#1a7a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px">A</div><b>Apostle Kevin Favour</b></div>
-  <div class="card" style="text-align:center"><b>JSTV FREE - All Features Unlocked</b><br><small style="color:#aaa">No subscription needed</small><div style="background:gold;color:#000;padding:12px;border-radius:20px;margin-top:10px;font-weight:bold">JSTV FREE VERSION</div></div>
-  <p style="color:#666">Live settings</p>
-  <div class="row">Stream destinations <span>›</span></div>
-  <div class="row">Save recent live title <span style="color:yellow">● ON</span></div>
-  <div class="row">Remove JSTV Watermark <span class="badge">FREE</span> <span>● ON</span></div>
-  <div class="row">Remove JSTV Outro <span class="badge">FREE</span> <span>○ OFF</span></div>
-  <p style="color:#666">My Studio settings</p>
-  <div class="row">Auto play on overlay <span>›</span></div>
-  <div class="row">Mute mic on screen saver <span style="color:yellow">● ON</span></div>
-  <p style="color:#666">CONNECT Settings</p>
-  <div class="row">Screen resolution <span>720P ›</span></div>
-  <div class="row">Screen bitrate <span>5000 kbps ›</span></div>
-  <p style="color:#666">General</p>
-  <div class="row">Help <span>›</span></div>
-  <div class="row">Privacy Policy <span>›</span></div>
-  <div class="row">Terms of use <span>›</span></div>
-  <div class="row">App version <span>1.0.0 FREE</span></div>
-  <button class="btn" onclick="document.getElementById('settingsPage').style.display='none'">Close Settings</button>
-</div>
-
-<!-- ===== V4: MY STUDIO ===== -->
-<div id="studioPage" class="overlay">
-  <div style="display:flex;justify-content:space-around">
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">▶️</div><small>Media</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">☰</div><small>Playlist</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">T</div><small>Text</small></div>
-    <div style="text-align:center"><div class="icon" style="width:56px;height:56px;background:#fff;color:#000">⊞</div><small>Widget</small></div>
-  </div>
-  <h2 style="margin-top:20px">My Studio ⚙️ <span style="float:right;border:1px solid #fff;border-radius:20px;padding:4px 14px;font-size:14px">Edit</span></h2>
-  <div style="display:flex;gap:12px;margin-top:14px">
-    <div style="width:130px;height:130px;background:#222;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;padding:8px">Jehovah Shammah TV</div>
-    <div style="width:130px;height:130px;background:#222;border-radius:14px;display:flex;align-items:center;justify-content:center">Text Here</div>
-  </div>
-  <button class="btn" style="margin-top:30px" onclick="document.getElementById('studioPage').style.display='none'">Close Studio</button>
-</div>
-
-<!-- ===== V5 + V6: MY CHANNELS + MULTISTREAM FREE + SAVE KEYS ===== -->
-<div id="channelsPage" class="overlay2">
-  <h2>Add platforms</h2>
-  <div style="display:flex;gap:14px;margin:14px 0">
-    <div style="text-align:center"><div style="width:72px;height:72px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:bold">f</div><small>Facebook<br>Connected</small></div>
-    <div style="text-align:center"><div style="width:72px;height:72px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center">▶️</div><small>YouTube<br>Connected</small></div>
-    <div style="text-align:center"><div style="width:72px;height:72px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px">+</div><small>Add<br>More</small></div>
-  </div>
-  <div style="display:flex;justify-content:space-between"><h3>My channels</h3><div style="background:#222;padding:6px 12px;border-radius:20px">✨ Multistream <span id="multiLabel" class="badge">ON - FREE</span></div></div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>Mtume Kevin Liyayi</b><br><small style="color:#aaa">Facebook Page</small></div><button id="fbToggle" onclick="toggleCh('fb')" style="width:52px;height:28px;border-radius:20px;border:0;background:#00ff88;font-weight:bold">ON</button></div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>MTUME KEVIN LIYAYI</b><br><small style="color:#aaa">YouTube Channel</small></div><button id="ytToggle" onclick="toggleCh('yt')" style="width:52px;height:28px;border-radius:20px;border:0;background:#00ff88;font-weight:bold">ON</button></div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>JSTV TikTok</b><br><small style="color:#aaa">TikTok - Custom RTMP</small></div><button id="ttToggle" onclick="toggleCh('tt')" style="width:52px;height:28px;border-radius:20px;border:0;background:#555;color:#fff">OFF</button></div>
-  <div style="background:#1a2a1a;border:1px solid #00ff88;border-radius:12px;padding:12px;text-align:center"><b style="color:#00ff88">✅ JSTV Multistream FREE</b><br><small>Max 6 channels - No Plus, No Subscribe needed</small></div>
-  <h3 style="margin-top:14px">V6: Custom RTMP Keys - Saved in Phone</h3>
-  <label>Facebook Stream Key</label><input id="fbKey" placeholder="Paste Facebook Stream Key">
-  <label>YouTube Stream Key</label><input id="ytKey" placeholder="Paste YouTube Stream Key">
-  <label>TikTok RTMP Key</label><input id="ttKey" placeholder="Paste TikTok RTMP Key">
-  <button class="btn" onclick="saveKeys()">💾 Save Keys in Phone</button>
-  <button class="big" onclick="startJSTVMulti()">🔴 GO LIVE TO ALL - FREE</button>
-  <button class="btn btn-dark" onclick="document.getElementById('channelsPage').style.display='none'">Close</button>
 </div>
 
 <script>
-function show(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('show')); document.getElementById(id).classList.add('show'); window.scrollTo(0,0); }
-function showPass(){ document.getElementById('showEmail').innerText=document.getElementById('jstvEmail').value; show('passPage'); }
-function showYT(){ document.getElementById('ytSheet').style.display='block'; }
-async function askPerm(){ try{ let s=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('cam').srcObject=s; alert("Permissions Granted"); show('p3'); }catch(e){ alert("Please Allow Camera + Mic"); show('p3'); } }
-let mode='live', facing='user', stream=null;
-async function startCam(){ try{ if(stream) stream.getTracks().forEach(t=>t.stop()); stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:facing}},audio:true}); document.getElementById('cam').srcObject=stream; }catch(e){ try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true}); document.getElementById('cam').srcObject=stream; }catch(e2){} } }
-startCam();
-function flip(){ facing=facing==='user'?'environment':'user'; startCam(); }
-function setSource(s){ document.querySelectorAll('.source button').forEach(b=>b.classList.remove('on')); if(s==='camera') document.getElementById('sCamera').classList.add('on'); if(s==='screen') document.getElementById('sScreen').classList.add('on'); if(s==='vtuber'){ document.getElementById('sVtuber').classList.add('on'); document.getElementById('vtuberBox').style.display='block'; } if(s==='screen') alert('JSTV Screen Share - Tap Share in browser. FREE.'); }
-function setMode(m){ mode=m; document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on')); let btn=document.getElementById('mainBtn'); if(m==='connect'){ document.getElementById('tConnect').classList.add('on'); document.getElementById('connectBox').style.display='block'; btn.innerText='Ready'; } if(m==='live'){ document.getElementById('tLive').classList.add('on'); btn.innerText='Ready'; btn.style.background='#fff'; } if(m==='video'){ document.getElementById('tVideo').classList.add('on'); btn.innerHTML='●'; btn.style.background='yellow'; } if(m==='photo'){ document.getElementById('tPhoto').classList.add('on'); btn.innerHTML='○'; btn.style.background='#fff'; } }
-function closeBoxes(){ document.getElementById('connectBox').style.display='none'; document.getElementById('vtuberBox').style.display='none'; setMode('live'); }
-function mainAction(){ if(mode==='live') openChannels(); if(mode==='video') alert('JSTV VIDEO - Recording Started (FREE)'); if(mode==='photo') alert('JSTV PHOTO - Photo Taken 📸'); if(mode==='connect') document.getElementById('connectBox').style.display='block'; }
-function openQuick(){ document.getElementById('quickPanel').style.display='block'; }
-function openSettings(){ document.getElementById('settingsPage').style.display='block'; }
-function openStudio(){ document.getElementById('studioPage').style.display='block'; }
-function openChannels(){ document.getElementById('channelsPage').style.display='block'; }
-let ch={fb:true,yt:true,tt:false};
-function toggleCh(w){ ch[w]=!ch[w]; let btn=document.getElementById(w==='fb'?'fbToggle':w==='yt'?'ytToggle':'ttToggle'); btn.innerText=ch[w]?'ON':'OFF'; btn.style.background=ch[w]?'#00ff88':'#555'; let c=Object.values(ch).filter(v=>v).length; document.getElementById('multiLabel').innerText=c>1?'ON - FREE':'OFF'; }
-function saveKeys(){ localStorage.setItem('jstv_fb',document.getElementById('fbKey').value); localStorage.setItem('jstv_yt',document.getElementById('ytKey').value); localStorage.setItem('jstv_tt',document.getElementById('ttKey').value); alert('✅ JSTV Keys Saved in Phone!'); }
-function startJSTVMulti(){ let c=Object.values(ch).filter(v=>v).length; if(c<=1) alert('Turn ON 2+ channels for Multistream. In JSTV this is FREE.'); else { document.getElementById('channelsPage').style.display='none'; document.getElementById('liveStatus').innerText='● LIVE to '+c+' channels - FREE'; document.getElementById('liveStatus').style.background='red'; document.getElementById('mainBtn').innerText='● LIVE'; alert('JSTV MULTISTREAM STARTED - FREE!\nLive to '+c+' channels.\nFacebook: '+ch.fb+'\nYouTube: '+ch.yt+'\nTikTok: '+ch.tt); } }
-// Load saved keys
-window.onload=function(){ if(localStorage.getItem('jstv_fb')) document.getElementById('fbKey').value=localStorage.getItem('jstv_fb'); if(localStorage.getItem('jstv_yt')) document.getElementById('ytKey').value=localStorage.getItem('jstv_yt'); if(localStorage.getItem('jstv_tt')) document.getElementById('ttKey').value=localStorage.getItem('jstv_tt'); }
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  if(id==='p4') startCam();
+}
+async function askPerm(){
+  try{ await navigator.mediaDevices.getUserMedia({video:true,audio:true}); alert('Allowed! Tap Next'); show('p3'); }
+  catch(e){ alert('Please Allow Camera + Mic in browser'); }
+}
+let mode='live', facing='user', stream=null, src='cam';
+function setMode(m,el){ mode=m; document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+function setSrc(s,el){ src=s; document.querySelectorAll('.row button').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+async function startCam(){
+  try{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:facing}},audio:true});
+    document.getElementById('cam').srcObject=stream;
+  }catch(e){
+    try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true}); document.getElementById('cam').srcObject=stream; }
+    catch(e2){ console.log(e2); }
+  }
+}
+function flip(){ facing=facing==='user'?'environment':'user'; startCam(); alert(facing==='user'?'Front Camera - You':'Back Camera - Church'); }
+function goLive(){ alert('You are LIVE on JSTV - '+mode+' - '+src+' - Camera: '+(facing==='user'?'Front':'Back')); }
+
+/* SWIPE = NEXT / PREV PAGE, NOT MOVE SCREEN */
+let sx=0, sy=0;
+let order=['p1','p2','p3','p4'];
+document.addEventListener('touchstart',e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+document.addEventListener('touchend',e=>{
+  let dx=e.changedTouches[0].clientX-sx;
+  let dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)<80 || Math.abs(dy)>60) return;
+  let curEl=document.querySelector('.page.show');
+  let cur=order.indexOf(curEl?curEl.id:'p1');
+  if(dx<-80 && cur<order.length-1) show(order[cur+1]);
+  else if(dx>80 && cur>0) show(order[cur-1]);
+},{passive:true});
 </script>
 </body>
 </html>
