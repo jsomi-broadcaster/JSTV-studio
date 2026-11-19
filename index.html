@@ -46,6 +46,28 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
+/* ===== LANDSCAPE = EVERYTHING MOVES WITH PHONE ===== */
+@media (orientation: landscape){
+  #mainScreen{flex-direction:row!important;flex-wrap:wrap}
+  #mainScreen > div:first-child{width:100%;order:1}
+  #studioTabInfo{width:100%;order:2}
+  #stage{flex:1;order:3;height:100dvh;min-width:0}
+  #toolbar{flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;width:110px!important;order:4;height:100dvh;justify-content:flex-start}
+  #toolbar button{white-space:normal!important;font-size:11px}
+  .panel{order:5;width:220px!important;max-height:100dvh!important;overflow-y:auto}
+  #nav{flex-direction:column!important;width:70px!important;order:6;height:100dvh;border-top:none;border-left:1px solid #333}
+  #nav button{padding:10px 2px;font-size:10px}
+  #goLive{bottom:70px!important;padding:10px 24px!important;font-size:15px}
+  #logoOverlay{width:60px!important;height:60px!important;top:8px!important;left:8px!important}
+  #titleOverlay{font-size:16px!important;top:8px!important}
+  #ticker{padding:5px!important;font-size:12px}
+  .screen{padding:10px!important}
+}
+@media (orientation: portrait){
+  #mainScreen{flex-direction:column!important}
+  #toolbar{flex-direction:row!important;width:100%!important}
+  #nav{flex-direction:row!important;width:100%!important}
+}
 </style>
 </head>
 <body>
@@ -199,26 +221,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
-let currentAngle = 0;
-function fixCamRotation(){
-  const cam = document.getElementById('cam');
-  if(!cam) return;
-  let mirror = (facing === 'user') ? -1 : 1;
-  cam.style.transform = `rotate(${-currentAngle}deg) scaleX(${mirror})`;
-  cam.style.transition = 'transform 0.2s';
-}
-function updateAngleFromScreen(){
-  try{
-    let a = 0;
-    if(screen.orientation && typeof screen.orientation.angle === 'number') a = screen.orientation.angle;
-    else if(typeof window.orientation === 'number') a = window.orientation;
-    currentAngle = a;
-  }catch(e){ currentAngle = 0; }
-  fixCamRotation();
-}
-window.addEventListener('orientationchange', ()=>{ setTimeout(updateAngleFromScreen, 300); });
-window.addEventListener('resize', ()=>{ setTimeout(updateAngleFromScreen, 200); });
-if(screen.orientation && screen.orientation.addEventListener){ screen.orientation.addEventListener('change', updateAngleFromScreen); }
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
@@ -227,8 +229,7 @@ try{
 if(stream)stream.getTracks().forEach(t=>t.stop());
 stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}});
 document.getElementById('cam').srcObject=stream;
-updateAngleFromScreen();
-}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;updateAngleFromScreen();}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
+}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
@@ -247,7 +248,7 @@ function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forE
 function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);document.getElementById('connectStatus').innerText='✅ Saved!';}
 function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
 function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
-function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');const isSide = (currentAngle===90 || currentAngle===-90 || currentAngle===270); if(isSide){c.width=v.videoHeight;c.height=v.videoWidth;}else{c.width=v.videoWidth;c.height=v.videoHeight;} let ctx=c.getContext('2d'); ctx.translate(c.width/2,c.height/2); ctx.rotate(currentAngle*Math.PI/180); ctx.scale(facing==='user'?-1:1,1); ctx.drawImage(v,-v.videoWidth/2,-v.videoHeight/2); const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
 function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
 function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
 function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
