@@ -11,9 +11,11 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 #app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
-#logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
-.jstvLogo{width:130px;height:130px;object-fit:contain;border-radius:50%}
-.jstvLogoSmall{width:60px;height:60px;object-fit:contain;border-radius:50%}
+#logoOverlay{position:absolute;top:12px;left:12px;width:140px;height:140px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000) drop-shadow(0 0 12px #FFD700)}
+.jstvLogo{width:300px;height:300px;max-width:85vw;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 20px #FFD700);display:block;margin:0 auto}
+.jstvLogoSmall{width:90px;height:90px;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 10px #FFD700)}
+.logoBigWrap{width:300px;height:300px;max-width:85vw;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#222 0%,#000 70%);border-radius:50%;border:2px solid #FFD700;overflow:hidden}
+.logoBigWrap img{width:100%;height:100%;object-fit:contain}
 #titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
 #ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
 #ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold}
@@ -32,8 +34,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:18px}
 .modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold}
 .modeBtn.on{background:#fff;color:#000}
-.orientBtn{padding:10px 12px;border-radius:20px;border:1px solid #555;background:#222;color:#fff;font-weight:bold;font-size:12px;flex:1}
-.orientBtn.on{background:#FFD700;color:#000;border-color:#FFD700}
 #goLivePopup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:100}
 #goLivePopup.show{display:flex}
 #goLiveCard{background:#1e1e1e;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:16px}
@@ -48,30 +48,15 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
-/* ===== CORRECT SCREEN ORIENTATION - #1 SAFE ONLY ===== */
-/* This ONLY moves Toolbar / Nav - NEVER touches #cam, #stage, #logoOverlay, body */
-/* Portrait - Toolbar full width on bottom, Nav full width */
-@media screen and (orientation: portrait) {
-  #toolbar { width:100%; }
-  #nav { width:100%; }
-  .orientBar { flex-direction:row; }
-}
-/* Landscape - Toolbar stays on bottom but smaller padding, Nav stays bottom */
-@media screen and (orientation: landscape) {
-  #toolbar { width:100%; padding:6px; }
-  #nav { width:100%; }
-  .orientBar { flex-direction:row; }
-}
-/* NO rotate, NO transform, NO aspect-ratio on #cam or #stage - IMAGE FREE */
 </style>
 </head>
 <body>
 <div id="app">
 <div id="splashScreen" class="screen active" style="background:#000">
-<img src="logo.png" class="jstvLogo" alt="JSTV">
-<div style="font-size:32px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400">Live Studio</span></div>
-<p style="color:#aaa;margin-top:8px">Powerful video production kit for creators</p>
-<p style="color:#FFD700;margin-top:12px;font-size:13px;font-weight:bold">JSTV BROADCASTER STUDIO</p>
+<div class="logoBigWrap"><img src="jstv_logo.png" alt="JSTV"></div>
+<div style="font-size:32px;font-weight:900;margin-top:16px;text-align:center">JSTV <span style="font-weight:400">Live Studio</span></div>
+<p style="color:#aaa;margin-top:8px;text-align:center">Powerful video production kit for creators</p>
+<p style="color:#FFD700;margin-top:12px;font-size:14px;font-weight:bold;text-align:center">JSTV BROADCASTER STUDIO</p>
 </div>
 <div id="permScreen" class="screen" style="background:#000;justify-content:flex-start;padding-top:40px">
 <div style="background:#fff;color:#000;border-radius:8px;padding:20px;max-width:340px;width:100%">
@@ -83,9 +68,9 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 </div>
 <div id="loginScreen" class="screen" style="background:#111">
-<img src="logo.png" class="jstvLogo" alt="JSTV">
-<h2 style="font-size:28px;margin-top:8px">JSTV <span style="font-weight:400">Live Studio</span></h2>
-<p style="color:#aaa;margin:6px 0 20px">Powerful video production kit for creators</p>
+<img src="jstv_logo.png" class="jstvLogo" alt="JSTV">
+<h2 style="font-size:28px;margin-top:8px;text-align:center">JSTV <span style="font-weight:400">Live Studio</span></h2>
+<p style="color:#aaa;margin:6px 0 20px;text-align:center">Powerful video production kit for creators</p>
 <button class="btn" onclick="loginGo()">Facebook - Continue with Facebook</button>
 <button class="btn" onclick="loginGo()">Google</button>
 <button class="btn" onclick="loginGo()">Twitch</button>
@@ -101,15 +86,9 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button class="studioTab" onclick="setStudioTab('widget',this)">Widget</button>
 </div>
 <p id="studioTabInfo" style="padding:6px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
-<div class="orientBar" style="display:flex;gap:8px;justify-content:center;width:100%;padding:8px;background:#000">
-<button id="btnLockPortrait" class="orientBtn" onclick="lockScreenPortrait()">📱 Lock Portrait</button>
-<button id="btnLockLandscape" class="orientBtn" onclick="lockScreenLandscape()">🖥️ Lock Landscape</button>
-<button id="btnUnlock" class="orientBtn" onclick="unlockScreen()">🔓 Unlock</button>
-</div>
-<p id="screenOrientInfo" style="padding:4px 10px;font-size:11px;color:#aaa;align-self:flex-start">SCREEN: Auto - Turn phone to change layout. Tap Lock to fix SCREEN. Camera NOT touched.</p>
 <div id="stage">
 <video id="cam" autoplay playsinline muted></video>
-<img id="logoOverlay" src="logo.png" alt="JSTV Logo">
+<img id="logoOverlay" src="jstv_logo.png" alt="JSTV Logo">
 <div id="titleOverlay">JSTV LIVE</div>
 <div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div>
 <div id="liveTopBar">
@@ -117,7 +96,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div>
 <button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px">End</button>
 </div>
-<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO • <span id="liveOrientText">SCREEN Auto</span></div>
+<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO</div>
 </div>
 <div style="position:absolute;bottom:70px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
 <button class="modeBtn" onclick="setSource('screen',this)">Screen</button>
@@ -136,20 +115,20 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
 </div>
-<div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
-<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><p style="font-size:12px;color:#FFD700;margin-top:6px">SCREEN: <span id="panelOrient">Auto - Camera NOT touched</span></p><button onclick="lockScreenPortrait()">📱 Lock SCREEN Portrait</button><button onclick="lockScreenLandscape()">🖥️ Lock SCREEN Landscape</button><button onclick="unlockScreen()">🔓 Unlock SCREEN</button><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
+<div id="connectPanel" class="panel"><h3>CONNECT - RESTREAM</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
+<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
 <div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="logoPanel" class="panel">
 <h3>Logo - YOUR REAL JSTV LOGO</h3>
-<p style="font-size:13px;color:#aaa">Crown + JSTV BROADCASTER STUDIO - Your real logo from logo.png</p>
-<div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0">
-<img src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%" alt="JSTV">
-<p>JSTV BROADCASTER STUDIO - Real Logo</p>
+<p style="font-size:13px;color:#aaa">Crown + JSTV BROADCASTER STUDIO - Your real logo from jstv_logo.png</p>
+<div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0;border:2px solid #FFD700">
+<img src="jstv_logo.png" style="width:220px;height:220px;max-width:85vw;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 15px #FFD700)" alt="JSTV">
+<p style="font-size:16px;font-weight:bold;color:#FFD700;margin-top:8px">JSTV BROADCASTER STUDIO - Real Logo</p>
 </div>
-<label>Logo Size</label><input type="range" id="logoSize" min="50" max="160" value="90" oninput="resizeLogo()">
-<p style="font-size:12px;color:#aaa">To change logo: Replace logo.png in GitHub with new image, same name.</p>
+<label>Logo Size</label><input type="range" id="logoSize" min="80" max="220" value="140" oninput="resizeLogo()">
+<p style="font-size:12px;color:#aaa">Logo file: jstv_logo.png - Already in GitHub ✅</p>
 <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
 <button onclick="showLogo()" style="background:#333">👁️ Show Logo</button>
 <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
@@ -176,7 +155,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <p>Mute microphone on screen saver <span style="color:#D4FF00">ON</span></p>
 <p style="margin-top:10px">Screen resolution when connected: 720P</p>
 <p>Screen bitrate when connected: 5000 kbps</p>
-<p style="margin-top:10px">SCREEN Orientation: <span id="settingsOrient">Auto - Tap Lock Portrait / Landscape</span></p>
 <p style="margin-top:10px">Live</p>
 <p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
 <p>Save video after streaming <span style="color:#aaa">OFF</span></p>
@@ -194,11 +172,10 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="goLivePopup">
 <div id="goLiveCard">
 <div style="display:flex;gap:10px;align-items:center">
-<img src="logo.png" class="jstvLogoSmall" alt="JSTV">
+<img src="jstv_logo.png" class="jstvLogoSmall" alt="JSTV">
 <div><b>Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:13px">Live streaming of Mtume Kevin Liyayi</span></div>
 </div>
 <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
-<p id="popupOrient" style="font-size:13px;color:#FFD700;margin-top:10px">SCREEN: Auto - Camera NOT touched</p>
 <button class="goBtn" onclick="confirmGoLive()">Go Live</button>
 <button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px">Cancel</button>
 </div>
@@ -223,55 +200,16 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
-let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0, screenLockMode='auto';
-function updateScreenOrientUI(){
-  const label = screenLockMode==='portrait' ? 'SCREEN Locked: Portrait' : screenLockMode==='landscape' ? 'SCREEN Locked: Landscape' : 'SCREEN: Auto - Turn phone to change layout';
-  document.getElementById('screenOrientInfo').innerText = label + ' - Camera NOT touched.';
-  document.getElementById('panelOrient').innerText = label;
-  document.getElementById('settingsOrient').innerText = label;
-  document.getElementById('liveOrientText').innerText = label;
-  document.getElementById('popupOrient').innerText = label;
-  document.querySelectorAll('.orientBtn').forEach(b=>b.classList.remove('on'));
-  if(screenLockMode==='portrait') document.getElementById('btnLockPortrait').classList.add('on');
-  if(screenLockMode==='landscape') document.getElementById('btnLockLandscape').classList.add('on');
-  if(screenLockMode==='auto') document.getElementById('btnUnlock').classList.add('on');
-}
-async function tryLockScreen(mode){
-  // CORRECT API #2: screen.orientation.lock() - Locks PHONE SCREEN only, NEVER touches #cam
-  try{
-    if(!document.fullscreenElement){
-      try{ await document.documentElement.requestFullscreen(); }catch(e){}
-    }
-    if(screen.orientation && screen.orientation.lock){
-      await screen.orientation.lock(mode);
-    }
-    screenLockMode = mode;
-    updateScreenOrientUI();
-  }catch(e){
-    // If browser blocks lock (needs fullscreen / user gesture), still show mode - layout CSS will handle it
-    screenLockMode = mode;
-    updateScreenOrientUI();
-  }
-  // NO startCam() - Camera NOT restarted, image NOT touched
-}
-function lockScreenPortrait(){ tryLockScreen('portrait'); }
-function lockScreenLandscape(){ tryLockScreen('landscape'); }
-async function unlockScreen(){
-  try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); if(document.fullscreenElement) await document.exitFullscreen(); }catch(e){}
-  screenLockMode='auto'; updateScreenOrientUI();
-}
-// Listen for real screen change - ONLY update label, NEVER touch camera
-if(screen.orientation){ screen.orientation.addEventListener('change', ()=>{ if(screenLockMode==='auto') updateScreenOrientUI(); }); }
+let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
-function loginGo(){showScreen('mainScreen');startCam();updateScreenOrientUI();}
+function loginGo(){showScreen('mainScreen');startCam();}
 async function startCam(){
-  // CAMERA FREE: No width, No height, No fps, No orientation - Phone decides
-  try{
-    if(stream)stream.getTracks().forEach(t=>t.stop());
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
-    document.getElementById('cam').srcObject=stream;
-  }catch(e){alert('Allow Camera + Mic - Tap While using the app');}
+try{
+if(stream)stream.getTracks().forEach(t=>t.stop());
+stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
+document.getElementById('cam').srcObject=stream;
+}catch(e){alert('Allow Camera + Mic - Tap While using the app');}
 }
 function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
@@ -295,7 +233,7 @@ function addStudioMedia(){const f=document.getElementById('studioMedia').files[0
 function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
 function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
 function addWidget(){document.getElementById('studioList').innerHTML='✅ Widget Added: Chat / Clock<br>'+document.getElementById('studioList').innerHTML;}
-function openGoLivePopup(){updateScreenOrientUI();document.getElementById('goLivePopup').classList.add('show');}
+function openGoLivePopup(){document.getElementById('goLivePopup').classList.add('show');}
 function closeGoLivePopup(){document.getElementById('goLivePopup').classList.remove('show');}
 function showChannels(){document.getElementById('channelsPopup').style.display='flex';}
 function closeChannels(){document.getElementById('channelsPopup').style.display='none';}
@@ -304,7 +242,6 @@ function cancelStarting(){document.getElementById('startingScreen').classList.re
 function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
 function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
 try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
-updateScreenOrientUI();
 </script>
 </body>
 </html>
