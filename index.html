@@ -11,8 +11,6 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 #app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
-#stage.portrait{aspect-ratio:9/16}
-#stage.landscape{aspect-ratio:16/9}
 #logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
 .jstvLogo{width:130px;height:130px;object-fit:contain;border-radius:50%}
 .jstvLogoSmall{width:60px;height:60px;object-fit:contain;border-radius:50%}
@@ -25,7 +23,6 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 .btn{width:100%;max-width:340px;padding:14px;margin:6px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:16px}
 .btnDark{background:#222;color:#fff;border:1px solid #444}
 input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff}
-select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff}
 .panel{display:none;padding:12px;background:#111;max-height:42vh;overflow-y:auto;width:100%}
 .panel.active{display:block}
 .panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
@@ -35,7 +32,7 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 #goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:18px}
 .modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold}
 .modeBtn.on{background:#fff;color:#000}
-.orientBtn{padding:10px 14px;border-radius:20px;border:1px solid #555;background:#222;color:#fff;font-weight:bold;font-size:12px;flex:1}
+.orientBtn{padding:10px 12px;border-radius:20px;border:1px solid #555;background:#222;color:#fff;font-weight:bold;font-size:12px;flex:1}
 .orientBtn.on{background:#FFD700;color:#000;border-color:#FFD700}
 #goLivePopup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:100}
 #goLivePopup.show{display:flex}
@@ -49,9 +46,23 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 #liveTopBar{position:absolute;top:0;left:0;right:0;display:none;z-index:30;padding:8px;background:rgba(0,0,0,.4)}
 #app.is-live #liveTopBar{display:block}
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
-#app.is-live .orientBar{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
+/* ===== CORRECT SCREEN ORIENTATION - #1 SAFE ONLY ===== */
+/* This ONLY moves Toolbar / Nav - NEVER touches #cam, #stage, #logoOverlay, body */
+/* Portrait - Toolbar full width on bottom, Nav full width */
+@media screen and (orientation: portrait) {
+  #toolbar { width:100%; }
+  #nav { width:100%; }
+  .orientBar { flex-direction:row; }
+}
+/* Landscape - Toolbar stays on bottom but smaller padding, Nav stays bottom */
+@media screen and (orientation: landscape) {
+  #toolbar { width:100%; padding:6px; }
+  #nav { width:100%; }
+  .orientBar { flex-direction:row; }
+}
+/* NO rotate, NO transform, NO aspect-ratio on #cam or #stage - IMAGE FREE */
 </style>
 </head>
 <body>
@@ -91,15 +102,12 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 </div>
 <p id="studioTabInfo" style="padding:6px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
 <div class="orientBar" style="display:flex;gap:8px;justify-content:center;width:100%;padding:8px;background:#000">
-<button id="btnPortrait" class="orientBtn on" onclick="setOrientation('portrait',this)">📱 Portrait<br>9:16 • 720x1280</button>
-<button id="btnLandscape" class="orientBtn" onclick="setOrientation('landscape',this)">🖥️ Landscape<br>16:9 • 1280x720</button>
+<button id="btnLockPortrait" class="orientBtn" onclick="lockScreenPortrait()">📱 Lock Portrait</button>
+<button id="btnLockLandscape" class="orientBtn" onclick="lockScreenLandscape()">🖥️ Lock Landscape</button>
+<button id="btnUnlock" class="orientBtn" onclick="unlockScreen()">🔓 Unlock</button>
 </div>
-<p id="orientInfo" style="padding:4px 10px;font-size:11px;color:#aaa;align-self:flex-start">SCREEN: Portrait 9:16 | 720 x 1280 | 30 fps | Locked BEFORE Go Live</p>
-<div style="display:flex;gap:8px;width:100%;padding:0 10px 6px;background:#000">
-<select id="resSelect" onchange="changeScreenSettings()"><option value="720">SCREEN HD 720p</option><option value="1080">SCREEN Full HD 1080p</option></select>
-<select id="fpsSelect" onchange="changeScreenSettings()"><option value="30">SCREEN 30 fps</option><option value="60">SCREEN 60 fps</option></select>
-</div>
-<div id="stage" class="portrait">
+<p id="screenOrientInfo" style="padding:4px 10px;font-size:11px;color:#aaa;align-self:flex-start">SCREEN: Auto - Turn phone to change layout. Tap Lock to fix SCREEN. Camera NOT touched.</p>
+<div id="stage">
 <video id="cam" autoplay playsinline muted></video>
 <img id="logoOverlay" src="logo.png" alt="JSTV Logo">
 <div id="titleOverlay">JSTV LIVE</div>
@@ -109,7 +117,7 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 <div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div>
 <button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px">End</button>
 </div>
-<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">SCREEN 30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO • <span id="liveOrientText">Portrait 9:16</span></div>
+<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO • <span id="liveOrientText">SCREEN Auto</span></div>
 </div>
 <div style="position:absolute;bottom:70px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
 <button class="modeBtn" onclick="setSource('screen',this)">Screen</button>
@@ -129,7 +137,7 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
 </div>
 <div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
-<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><p style="font-size:12px;color:#FFD700;margin-top:6px">SCREEN Lock: <span id="panelOrient">Portrait 9:16 - 720x1280 - 30fps</span></p><button onclick="setOrientation('portrait',document.getElementById('btnPortrait'))">📱 SCREEN Portrait 9:16</button><button onclick="setOrientation('landscape',document.getElementById('btnLandscape'))">🖥️ SCREEN Landscape 16:9</button><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
+<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><p style="font-size:12px;color:#FFD700;margin-top:6px">SCREEN: <span id="panelOrient">Auto - Camera NOT touched</span></p><button onclick="lockScreenPortrait()">📱 Lock SCREEN Portrait</button><button onclick="lockScreenLandscape()">🖥️ Lock SCREEN Landscape</button><button onclick="unlockScreen()">🔓 Unlock SCREEN</button><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
 <div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
@@ -166,8 +174,9 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 <p style="margin-top:10px">My Studio settings</p>
 <p>Auto play on overlay ></p>
 <p>Mute microphone on screen saver <span style="color:#D4FF00">ON</span></p>
-<p style="margin-top:10px">SCREEN resolution: <span id="settingsRes">720P Portrait 720x1280</span></p>
+<p style="margin-top:10px">Screen resolution when connected: 720P</p>
 <p>Screen bitrate when connected: 5000 kbps</p>
+<p style="margin-top:10px">SCREEN Orientation: <span id="settingsOrient">Auto - Tap Lock Portrait / Landscape</span></p>
 <p style="margin-top:10px">Live</p>
 <p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
 <p>Save video after streaming <span style="color:#aaa">OFF</span></p>
@@ -188,8 +197,8 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 <img src="logo.png" class="jstvLogoSmall" alt="JSTV">
 <div><b>Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:13px">Live streaming of Mtume Kevin Liyayi</span></div>
 </div>
-<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; <span id="popupRes">SCREEN 720p Portrait</span> ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
-<p id="popupOrient" style="font-size:13px;color:#FFD700;margin-top:10px">🔒 SCREEN Locked: Portrait 9:16 - 720x1280 - 30 fps - Camera NOT touched</p>
+<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
+<p id="popupOrient" style="font-size:13px;color:#FFD700;margin-top:10px">SCREEN: Auto - Camera NOT touched</p>
 <button class="goBtn" onclick="confirmGoLive()">Go Live</button>
 <button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px">Cancel</button>
 </div>
@@ -210,55 +219,54 @@ select{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;b
 <div style="font-size:60px">📱</div>
 <h2 style="margin-top:12px" id="startingTitle">Starting</h2>
 <p style="color:#ccc;margin-top:8px">The screen orientation cannot be<br>rotated after broadcast has begun.</p>
-<p id="startingOrient" style="color:#FFD700;margin-top:8px;font-size:13px">SCREEN Locked: Portrait 9:16 - 720x1280</p>
 <button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px">Cancel</button>
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
-let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0, currentOrient='portrait', currentRes=720, currentFps=30, orientationLocked=false;
-// SCREEN ONLY - These numbers are ONLY for labels, NEVER sent to camera
-function getScreenSize(){
-  if(currentOrient==='landscape'){ return currentRes===1080 ? {w:1920,h:1080,label:'1920x1080'} : {w:1280,h:720,label:'1280x720'}; }
-  else { return currentRes===1080 ? {w:1080,h:1920,label:'1080x1920'} : {w:720,h:1280,label:'720x1280'}; }
-}
-function updateScreenUI(){
-  const s=getScreenSize();
-  const orientLabel = currentOrient==='landscape' ? 'Landscape 16:9' : 'Portrait 9:16';
-  const full = orientLabel+' - '+s.label+' - '+currentFps+'fps';
-  document.getElementById('orientInfo').innerText='SCREEN: '+full+' | Locked BEFORE Go Live';
-  document.getElementById('panelOrient').innerText=full;
-  document.getElementById('liveOrientText').innerText=orientLabel;
-  document.getElementById('settingsRes').innerText=(currentRes===1080?'1080P ':'720P ')+orientLabel+' '+s.label;
-  document.getElementById('fpsText').innerText='SCREEN '+currentFps+' fps';
-  document.getElementById('popupRes').innerText='SCREEN '+currentRes+'p '+(currentOrient==='landscape'?'Landscape':'Portrait');
-  document.getElementById('popupOrient').innerText='🔒 SCREEN Locked: '+full+' - Camera NOT touched';
-  document.getElementById('startingOrient').innerText='SCREEN Locked: '+full;
-}
-function setOrientation(mode,btn){
-  if(orientationLocked){alert('SCREEN LOCKED! Cannot change SCREEN after broadcast has begun. End Live to change SCREEN.');return;}
-  currentOrient=mode;
-  // SCREEN ONLY: change stage shape ONLY. Camera element inside is NOT touched, NOT restarted, NOT resized in code.
-  const stage=document.getElementById('stage');
-  stage.classList.remove('portrait','landscape');
-  stage.classList.add(mode);
+let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0, screenLockMode='auto';
+function updateScreenOrientUI(){
+  const label = screenLockMode==='portrait' ? 'SCREEN Locked: Portrait' : screenLockMode==='landscape' ? 'SCREEN Locked: Landscape' : 'SCREEN: Auto - Turn phone to change layout';
+  document.getElementById('screenOrientInfo').innerText = label + ' - Camera NOT touched.';
+  document.getElementById('panelOrient').innerText = label;
+  document.getElementById('settingsOrient').innerText = label;
+  document.getElementById('liveOrientText').innerText = label;
+  document.getElementById('popupOrient').innerText = label;
   document.querySelectorAll('.orientBtn').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  updateScreenUI();
-  // NO startCam() here - camera keeps running untouched
-  try{localStorage.setItem('jstv_orient',mode);}catch(e){}
+  if(screenLockMode==='portrait') document.getElementById('btnLockPortrait').classList.add('on');
+  if(screenLockMode==='landscape') document.getElementById('btnLockLandscape').classList.add('on');
+  if(screenLockMode==='auto') document.getElementById('btnUnlock').classList.add('on');
 }
-function changeScreenSettings(){
-  if(orientationLocked){alert('SCREEN LOCKED during Live! End Live to change SCREEN.');document.getElementById('resSelect').value=currentRes;document.getElementById('fpsSelect').value=currentFps;return;}
-  currentRes=parseInt(document.getElementById('resSelect').value);
-  currentFps=parseInt(document.getElementById('fpsSelect').value);
-  updateScreenUI();
-  // NO startCam() - SCREEN settings do NOT touch camera
+async function tryLockScreen(mode){
+  // CORRECT API #2: screen.orientation.lock() - Locks PHONE SCREEN only, NEVER touches #cam
+  try{
+    if(!document.fullscreenElement){
+      try{ await document.documentElement.requestFullscreen(); }catch(e){}
+    }
+    if(screen.orientation && screen.orientation.lock){
+      await screen.orientation.lock(mode);
+    }
+    screenLockMode = mode;
+    updateScreenOrientUI();
+  }catch(e){
+    // If browser blocks lock (needs fullscreen / user gesture), still show mode - layout CSS will handle it
+    screenLockMode = mode;
+    updateScreenOrientUI();
+  }
+  // NO startCam() - Camera NOT restarted, image NOT touched
 }
+function lockScreenPortrait(){ tryLockScreen('portrait'); }
+function lockScreenLandscape(){ tryLockScreen('landscape'); }
+async function unlockScreen(){
+  try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); if(document.fullscreenElement) await document.exitFullscreen(); }catch(e){}
+  screenLockMode='auto'; updateScreenOrientUI();
+}
+// Listen for real screen change - ONLY update label, NEVER touch camera
+if(screen.orientation){ screen.orientation.addEventListener('change', ()=>{ if(screenLockMode==='auto') updateScreenOrientUI(); }); }
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
-function loginGo(){showScreen('mainScreen');try{let saved=localStorage.getItem('jstv_orient');if(saved){currentOrient=saved;document.getElementById('stage').classList.remove('portrait','landscape');document.getElementById('stage').classList.add(saved);document.querySelectorAll('.orientBtn').forEach(b=>b.classList.remove('on'));document.getElementById(saved==='landscape'?'btnLandscape':'btnPortrait').classList.add('on');}}catch(e){} startCam(); updateScreenUI();}
+function loginGo(){showScreen('mainScreen');startCam();updateScreenOrientUI();}
 async function startCam(){
-  // CAMERA FREE: No width, No height, No fps from SCREEN settings. Phone decides naturally.
+  // CAMERA FREE: No width, No height, No fps, No orientation - Phone decides
   try{
     if(stream)stream.getTracks().forEach(t=>t.stop());
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
@@ -282,24 +290,21 @@ function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forE
 function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);document.getElementById('connectStatus').innerText='✅ Saved!';}
 function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
 function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
-function takePhoto(){
-  // PHOTO FREE: Uses whatever camera gives, NO screen size, NO crop, NO rotate
-  const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';
-}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
 function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
 function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
 function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
 function addWidget(){document.getElementById('studioList').innerHTML='✅ Widget Added: Chat / Clock<br>'+document.getElementById('studioList').innerHTML;}
-function openGoLivePopup(){updateScreenUI();document.getElementById('goLivePopup').classList.add('show');}
+function openGoLivePopup(){updateScreenOrientUI();document.getElementById('goLivePopup').classList.add('show');}
 function closeGoLivePopup(){document.getElementById('goLivePopup').classList.remove('show');}
 function showChannels(){document.getElementById('channelsPopup').style.display='flex';}
 function closeChannels(){document.getElementById('channelsPopup').style.display='none';}
 function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').classList.add('show');setTimeout(()=>{document.getElementById('startingScreen').classList.remove('show');document.getElementById('countScreen').classList.add('show');setTimeout(()=>{document.getElementById('countScreen').classList.remove('show');startLive();},1000);},2000);}
 function cancelStarting(){document.getElementById('startingScreen').classList.remove('show');}
-function startLive(){isLive=true;orientationLocked=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00 - SCREEN LOCKED '+getScreenSize().label;liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s+' - SCREEN LOCKED '+getScreenSize().label;},1000);}
-function stopLive(){isLive=false;orientationLocked=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
+function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
 try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
-updateScreenUI();
+updateScreenOrientUI();
 </script>
 </body>
 </html>
