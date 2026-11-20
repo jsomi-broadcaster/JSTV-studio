@@ -8,7 +8,7 @@ p{font-size:19px}
 .btn{display:block;width:95%;max-width:360px;margin:18px auto;padding:20px;background:gold;color:#000;border:0;border-radius:30px;font-size:22px;font-weight:bold;text-decoration:none;text-align:center}
 .btn2{display:block;width:95%;max-width:360px;margin:12px auto;padding:16px;background:#222;color:#fff;border:1px solid #555;border-radius:20px;font-size:20px;text-decoration:none;text-align:center}
 input{width:95%;max-width:360px;padding:18px;margin:10px auto;display:block;border-radius:12px;border:1px solid #555;background:#111;color:#fff;font-size:20px}
-#cam{width:100%;height:55vh;object-fit:cover;background:#111;border-radius:14px}
+#cam{width:100%;height:55vh;object-fit:cover;transform:rotate(0deg) !important;display:block}
 .row{display:flex;gap:8px}
 .row button,.row a{flex:1;padding:16px;background:#222;color:#fff;border:1px solid #555;border-radius:12px;font-size:19px;text-decoration:none;text-align:center}
 .row .on{background:gold;color:#000}
