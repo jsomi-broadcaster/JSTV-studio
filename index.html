@@ -9,13 +9,16 @@
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
 body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 #app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
+/* CAMERA BIG - FIXED */
 #cam{width:100%;height:100%;object-fit:cover;background:#222;display:block}
-#stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
-#logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%}
-.jstvLogo{width:130px;height:130px;object-fit:contain;border-radius:50%}
-.jstvLogoSmall{width:60px;height:60px;object-fit:contain;border-radius:50%}
+#stage{flex:1;min-height:58vh;height:58vh;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
+#logoOverlay{position:absolute;top:10px;left:10px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
+.jstvLogo{width:300px;height:300px;max-width:85vw;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 20px #FFD700);display:block;margin:0 auto}
+.jstvLogoSmall{width:80px;height:80px;object-fit:contain;border-radius:50%}
+.logoBigWrap{width:300px;height:300px;max-width:85vw;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#222 0%,#000 70%);border-radius:50%;border:2px solid #FFD700;overflow:hidden}
+.logoBigWrap img{width:100%;height:100%;object-fit:contain}
 #titleOverlay{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
-#ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
+#ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:7px;white-space:nowrap;overflow:hidden;z-index:9}
 #ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold}
 @keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
 .screen{display:none;height:100dvh;width:100%;flex-direction:column;align-items:center;justify-content:center;padding:20px}
@@ -23,14 +26,14 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
 .btn{width:100%;max-width:340px;padding:14px;margin:6px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:16px}
 .btnDark{background:#222;color:#fff;border:1px solid #444}
 input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff}
-.panel{display:none;padding:12px;background:#111;max-height:42vh;overflow-y:auto;width:100%}
+.panel{display:none;padding:10px;background:#111;max-height:28vh;overflow-y:auto;width:100%}
 .panel.active{display:block}
-.panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
+.panel button{width:100%;padding:10px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
 #nav{display:flex;background:#000;border-top:1px solid #333;width:100%}
-#nav button{flex:1;padding:14px 2px;background:none;border:none;color:#888;font-size:12px;font-weight:bold}
+#nav button{flex:1;padding:12px 2px;background:none;border:none;color:#888;font-size:12px;font-weight:bold}
 #nav button.active{color:#fff;border-top:3px solid #FFD700;background:#1a1a1a}
-#goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:18px}
-.modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold}
+#goLive{position:absolute;bottom:78px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:10px 36px;border-radius:30px;font-weight:900;z-index:20;font-size:17px}
+.modeBtn{padding:8px 14px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold;font-size:13px}
 .modeBtn.on{background:#fff;color:#000}
 #goLivePopup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:100}
 #goLivePopup.show{display:flex}
@@ -44,17 +47,18 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #liveTopBar{position:absolute;top:0;left:0;right:0;display:none;z-index:30;padding:8px;background:rgba(0,0,0,.4)}
 #app.is-live #liveTopBar{display:block}
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
-.studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
+#app.is-live #stage{height:100dvh;min-height:100dvh}
+.studioTab{flex:1;padding:9px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
 </style>
 </head>
 <body>
 <div id="app">
 <div id="splashScreen" class="screen active" style="background:#000">
-<img src="jstv_logo.png" class="jstvLogo" alt="JSTV">
-<div style="font-size:32px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400">Live Studio</span></div>
-<p style="color:#aaa;margin-top:8px">Powerful video production kit for creators</p>
-<p style="color:#FFD700;margin-top:12px;font-size:13px;font-weight:bold">JSTV BROADCASTER STUDIO</p>
+<div class="logoBigWrap"><img src="jstv_logo.png" alt="JSTV"></div>
+<div style="font-size:32px;font-weight:900;margin-top:16px;text-align:center">JSTV <span style="font-weight:400">Live Studio</span></div>
+<p style="color:#aaa;margin-top:8px;text-align:center">Powerful video production kit for creators</p>
+<p style="color:#FFD700;margin-top:12px;font-size:14px;font-weight:bold;text-align:center">JSTV BROADCASTER STUDIO</p>
 </div>
 <div id="permScreen" class="screen" style="background:#000;justify-content:flex-start;padding-top:40px">
 <div style="background:#fff;color:#000;border-radius:8px;padding:20px;max-width:340px;width:100%">
@@ -67,8 +71,8 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="loginScreen" class="screen" style="background:#111">
 <img src="jstv_logo.png" class="jstvLogo" alt="JSTV">
-<h2 style="font-size:28px;margin-top:8px">JSTV <span style="font-weight:400">Live Studio</span></h2>
-<p style="color:#aaa;margin:6px 0 20px">Powerful video production kit for creators</p>
+<h2 style="font-size:28px;margin-top:8px;text-align:center">JSTV <span style="font-weight:400">Live Studio</span></h2>
+<p style="color:#aaa;margin:6px 0 20px;text-align:center">Powerful video production kit for creators</p>
 <button class="btn" onclick="loginGo()">Facebook - Continue with Facebook</button>
 <button class="btn" onclick="loginGo()">Google</button>
 <button class="btn" onclick="loginGo()">Twitch</button>
@@ -83,7 +87,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button class="studioTab" onclick="setStudioTab('text',this)">Text</button>
 <button class="studioTab" onclick="setStudioTab('widget',this)">Widget</button>
 </div>
-<p id="studioTabInfo" style="padding:6px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
+<p id="studioTabInfo" style="padding:5px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
 <div id="stage">
 <video id="cam" autoplay playsinline muted></video>
 <img id="logoOverlay" src="jstv_logo.png" alt="JSTV Logo">
@@ -96,34 +100,35 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO</div>
 </div>
-<div style="position:absolute;bottom:70px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
+<div style="position:absolute;bottom:48px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
 <button class="modeBtn" onclick="setSource('screen',this)">Screen</button>
 <button class="modeBtn on" onclick="setSource('camera',this)">Camera</button>
 <button class="modeBtn" onclick="setSource('vtuber',this)">VTuber</button>
 </div>
 <button id="goLive" onclick="openGoLivePopup()">Ready</button>
 </div>
-<div id="toolbar" style="display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;width:100%">
-<button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">➕ Title</button>
-<button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🖼️ Logo</button>
-<button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">📁 File</button>
-<button onclick="showPanel('tickerPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">✦ Ticker</button>
-<button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">🎬 My Studio</button>
-<button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🔄 Flip Cam</button>
-<button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
+<div id="toolbar" style="display:flex;gap:6px;padding:7px;background:#1a1a1a;overflow-x:auto;width:100%">
+<button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">➕ Title</button>
+<button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">🖼️ Logo</button>
+<button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">📁 File</button>
+<button onclick="showPanel('tickerPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">✦ Ticker</button>
+<button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:7px 11px;border-radius:20px;font-weight:bold;font-size:13px">🎬 My Studio</button>
+<button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">🔄 Flip Cam</button>
+<button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">🎤 Mic</button>
+<button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:7px 11px;border-radius:20px;font-size:13px">⚙️ Settings</button>
 </div>
-<div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
-<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
+<div id="connectPanel" class="panel"><h3>CONNECT - RESTREAM</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
+<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
 <div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="logoPanel" class="panel">
-<h3>Logo</h3>
-<div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0">
-<img src="jstv_logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%" alt="JSTV">
-<p>JSTV BROADCASTER STUDIO</p>
+<h3>Logo - YOUR REAL JSTV LOGO</h3>
+<div style="text-align:center;background:#000;padding:10px;border-radius:10px;margin:8px 0;border:2px solid #FFD700">
+<img src="jstv_logo.png" style="width:200px;height:200px;max-width:85vw;object-fit:contain;border-radius:50%" alt="JSTV">
+<p style="font-size:15px;font-weight:bold;color:#FFD700;margin-top:6px">JSTV BROADCASTER STUDIO</p>
 </div>
-<label>Logo Size</label><input type="range" id="logoSize" min="50" max="160" value="90" oninput="resizeLogo()">
+<label>Logo Size</label><input type="range" id="logoSize" min="60" max="160" value="90" oninput="resizeLogo()">
 <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
 <button onclick="showLogo()" style="background:#333">👁️ Show Logo</button>
 <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
@@ -133,11 +138,20 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="studioPanel" class="panel">
 <h3>🎬 My Studio</h3>
 <p style="font-size:13px;color:#aaa">Add Media, Playlist, Text, Widget</p>
-<p style="margin-top:10px"><b>Media</b></p><input type="file" id="studioMedia" accept="video/*,image/*,audio/*"><button onclick="addStudioMedia()">➕ Add to Studio</button>
-<p style="margin-top:10px"><b>Playlist</b></p><input id="playlistName" placeholder="Playlist name"><button onclick="addPlaylist()">➕ Create Playlist</button>
-<p style="margin-top:10px"><b>Text</b></p><input id="studioText" placeholder="Text Here"><button onclick="applyStudioText()">✅ Show Text on Live</button>
-<p style="margin-top:10px"><b>Widget</b></p><button onclick="addWidget()">➕ Add Widget</button>
-<div id="studioList" style="margin-top:10px;background:#222;padding:10px;border-radius:8px;font-size:13px">No items yet</div>
+<p style="margin-top:8px"><b>Media</b></p><input type="file" id="studioMedia" accept="video/*,image/*,audio/*"><button onclick="addStudioMedia()">➕ Add to Studio</button>
+<p style="margin-top:8px"><b>Playlist</b></p><input id="playlistName" placeholder="Playlist name"><button onclick="addPlaylist()">➕ Create Playlist</button>
+<p style="margin-top:8px"><b>Text</b></p><input id="studioText" placeholder="Text Here"><button onclick="applyStudioText()">✅ Show Text on Live</button>
+<p style="margin-top:8px"><b>Widget</b></p><button onclick="addWidget()">➕ Add Widget</button>
+<div id="studioList" style="margin-top:8px;background:#222;padding:8px;border-radius:8px;font-size:13px">No items yet</div>
+<button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
+</div>
+<div id="settingsPanel" class="panel">
+<h3>Settings</h3>
+<p style="font-size:13px;color:#aaa">My account</p><p style="font-weight:bold">Apostle Kevin Favour</p><br>
+<p>Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px">></button></p>
+<p style="margin-top:8px">Screen resolution: 720P</p>
+<p>Screen bitrate: 5000 kbps</p>
+<p style="margin-top:8px">App version: 5.4.3 - STUDIO</p>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
 <div id="nav">
