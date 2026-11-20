@@ -11,13 +11,19 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100%}
 #app{width:100%;height:100dvh;position:fixed;inset:0;display:flex;flex-direction:column;background:#000}
 .screen{display:none;width:100%;height:100dvh;min-height:100dvh;flex-direction:column;align-items:center;justify-content:center;padding:16px;background:#000}
 .screen.active{display:flex}
+/* --- 1st SCREEN - SPLASH - FILLS SCREEN + WELCOME --- */
+#splashScreen{padding:20px;text-align:center}
 .splashLogo{width:100%;max-width:420px;object-fit:contain;display:block}
+.welcomeCEO{color:#FFD700;font-size:22px;font-weight:900;line-height:1.3;margin-top:18px;letter-spacing:0.5px}
+.welcomeSub{color:#fff;font-size:16px;margin-top:10px;line-height:1.4}
+.welcomeGold{color:#FFD700;font-weight:bold}
+/* --- 2nd SCREEN - PERMISSION - FILLS SCREEN --- */
+#permScreen{padding:0;background:#fff}
+.permCard{background:#fff;color:#000;padding:30px 24px;width:100%;height:100dvh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
+.permCard h3{font-size:26px;line-height:1.3}
+.permCard p{margin-top:22px;color:#333;font-size:17px;font-weight:bold}
+.permCard small{font-size:15px;color:#666;display:block;margin-top:6px;line-height:1.5}
 .jstvLogo{width:300px;height:300px;max-width:90%;object-fit:contain;display:block}
-/* PERMISSION - HUGE - % NOT vw - CANNOT BE SMALL */
-.permCard{background:#fff;color:#000;border-radius:8px;padding:28px;width:100%;max-width:420px}
-.permCard h3{font-size:23px;line-height:1.3}
-.permCard p{margin-top:18px;color:#333;font-size:16px;font-weight:bold}
-.permCard small{font-size:14px;color:#666;display:block;margin-top:6px;line-height:1.4}
 .btn{width:100%;max-width:360px;padding:16px;margin:7px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:16px}
 .btnDark{background:transparent;color:#fff;text-decoration:underline}
 #mainScreen{padding:0;justify-content:flex-start}
@@ -57,8 +63,14 @@ body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100%}
 </head>
 <body>
 <div id="app">
-<div id="splashScreen" class="screen active"><img src="logo.png?v=99" class="splashLogo" alt="JSTV BROADCASTER STUDIO"></div>
-<div id="permScreen" class="screen"><div class="permCard"><h3>Please grant the following permission to use JSTV app.</h3><p>1. Camera (Required)</p><small>Permission required for live streaming, video recording, and photo shoots.</small><p>2. Microphone (Required)</p><small>Permission required for voice recording during live streaming and video shoots.</small><p>3. Notifications</p><small>Permission required for the indication of information related to Live Streaming.</small><div style="text-align:right;margin-top:16px"><button onclick="showScreen('loginScreen');goFull()" style="background:none;border:none;color:#008080;font-weight:bold;font-size:18px;padding:8px">OK</button></div></div></div>
+<!-- 1st SCREEN - SPLASH + WELCOME -->
+<div id="splashScreen" class="screen active">
+<img src="logo.png?v=99" class="splashLogo" alt="JSTV BROADCASTER STUDIO">
+<div class="welcomeCEO">CEO KEVIN<br>WELCOMES YOU TO<br>JSTV STUDIO</div>
+<div class="welcomeSub">For all your <span class="welcomeGold">livestreaming journey</span></div>
+</div>
+<!-- 2nd SCREEN - PERMISSION - FULL SCREEN -->
+<div id="permScreen" class="screen"><div class="permCard"><h3>Please grant the following permission to use JSTV app.</h3><p>1. Camera (Required)</p><small>Permission required for live streaming, video recording, and photo shoots.</small><p>2. Microphone (Required)</p><small>Permission required for voice recording during live streaming and video shoots.</small><p>3. Notifications</p><small>Permission required for the indication of information related to Live Streaming.</small><div style="text-align:right;margin-top:26px"><button onclick="showScreen('loginScreen');goFull()" style="background:none;border:none;color:#008080;font-weight:900;font-size:20px;padding:10px">OK</button></div></div></div>
 <div id="loginScreen" class="screen" style="background:#111"><img src="logo.png?v=99" class="jstvLogo" alt="JSTV"><h2 style="font-size:28px;margin-top:8px">JSTV <span style="font-weight:400">Live Studio</span></h2><p style="color:#aaa;margin:6px 0 20px;text-align:center">Powerful video production kit for creators</p><button class="btn" onclick="loginGo()">Facebook - Continue with Facebook</button><button class="btn" onclick="loginGo()">Google</button><button class="btn" onclick="loginGo()">Twitch</button><p style="margin:14px;color:#aaa">OR</p><button class="btn btnDark" onclick="loginGo()">Sign up with email</button><p style="margin-top:26px;color:#888;font-size:12px">Terms of Use and Privacy Policy &nbsp;•&nbsp; Notices</p></div>
 <div id="mainScreen" class="screen"><div id="stage"><video id="cam" autoplay playsinline muted></video><img id="logoOverlay" src="logo.png?v=99" alt="JSTV Logo"><div id="titleOverlay">JSTV LIVE</div><div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div><div id="liveTopBar"><div style="display:flex;justify-content:space-between;align-items:center"><div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div><button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px">End</button></div></div><div id="topBar"><div style="display:flex;gap:10px"><button class="iconBtn" onclick="openSetup()">⋯</button></div><div style="display:flex;gap:10px;align-items:center"><span style="color:#ccc">● ● ●</span><button class="iconBtn" onclick="openSetup()">✨</button><button class="avatarBtn">A</button></div></div><div id="modePill"><button class="modeBtn" onclick="setSource('screen',this)">Screen</button><button class="modeBtn on" onclick="setSource('camera',this)">Camera</button><button class="modeBtn" onclick="setSource('vtuber',this)">VTuber</button></div><div id="bottomTools"><button onclick="openSetup()">✨</button><button onclick="openSetup()">🪄<br><span style="font-size:10px">OFF</span></button></div><button id="goLive" onclick="openGoLivePopup()">Ready</button><div id="nav"><button onclick="openConnect()">CONNECT</button><button class="active" onclick="openSetup()">LIVE</button><button onclick="openVideo()">VIDEO</button><button onclick="openPhoto()">PHOTO</button></div></div></div>
 </div>
@@ -74,7 +86,7 @@ let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSe
 function goFull(){try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen();}catch(e){}}
 document.addEventListener('click',goFull,{once:true});
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-setTimeout(()=>{showScreen('permScreen');},2500);
+setTimeout(()=>{showScreen('permScreen');},3500);
 function loginGo(){goFull();showScreen('mainScreen');startCam();}
 async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;}catch(e){alert('Allow Camera + Mic - Tap While using the app');}}
 function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
@@ -92,4 +104,26 @@ function hideTitle(){document.getElementById('titleOverlay').innerText='';}
 function resizeLogo(){let s=document.getElementById('logoSize').value;let l=document.getElementById('logoOverlay');l.style.width=s+'px';l.style.height=s+'px';}
 function hideLogo(){document.getElementById('logoOverlay').style.display='none';}
 function showLogo(){document.getElementById('logoOverlay').style.display='block';}
-function applyFile(){const f=document.getElementById
+function applyFile(){const f=document.getElementById('overlayFile').files[0];if(!f)return alert('Choose file');const r=new FileReader();r.onload=e=>{let img=document.createElement('img');img.src=e.target.result;img.style.cssText='position:absolute;top:120px;left:12px;width:150px;z-index:11';document.getElementById('stage').appendChild(img);};r.readAsDataURL(f);closeSetup();}
+function addLoop(){const f=document.getElementById('loopFile').files[0];if(!f)return alert('Choose media for loop');document.getElementById('loopList').innerHTML='✅ Loop: '+f.name+' - Loop: '+(document.getElementById('loopOn').checked?'ON':'OFF')+'<br>'+document.getElementById('loopList').innerHTML;}
+function applyTicker(){const t=document.getElementById('tickerInput').value;if(t)document.getElementById('tickerText').innerText='✦ '+t+' ✦';closeSetup();}
+function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forEach(t=>t.enabled=micOn);alert(micOn?'Mic ON':'Mic OFF');}
+function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);localStorage.setItem('jstv_dest',selectedDest);document.getElementById('connectStatus').innerText='✅ Saved! Destination: '+(selectedDest||'Custom RTMP');}
+function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
+function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
+function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
+function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
+function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;closeSetup();}
+function addWidget(){document.getElementById('studioList').innerHTML='✅ Widget Added: Chat / Clock<br>'+document.getElementById('studioList').innerHTML;}
+function openGoLivePopup(){document.getElementById('goLivePopup').classList.add('show');}
+function closeGoLivePopup(){document.getElementById('goLivePopup').classList.remove('show');}
+function showChannels(){openConnect();}
+function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').style.display='flex';setTimeout(()=>{document.getElementById('startingScreen').style.display='none';document.getElementById('countScreen').style.display='flex';setTimeout(()=>{document.getElementById('countScreen').style.display='none';startLive();},1000);},2000);}
+function cancelStarting(){document.getElementById('startingScreen').style.display='none';}
+function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;},1000);}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');clearInterval(liveTimer);}
+try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
+</script>
+</body>
+</html>
