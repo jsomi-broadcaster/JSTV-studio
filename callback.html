@@ -19,13 +19,40 @@ async function run(){
   const error = params.get("error");
   const msg = document.getElementById("msg");
   if(error){ msg.innerText = "Restream error: " + error; document.getElementById("backBtn").style.display="block"; return; }
-  if(!code){ msg.innerText = "No code received. Go back and tap Connect again."; document.getElementById("backBtn").style.display="block"; return; }
-  // Save code for now - Step 4 will exchange it for token
-  localStorage.setItem("jstv_restream_code", code);
-  localStorage.setItem("jstv_code", code);
-  msg.innerText = "✅ Code received! Saved. Going back to Studio...";
+  if(!code){ msg.innerText = "No code received."; document.getElementById("backBtn").style.display="block"; return; }
+
+  msg.innerText = "Code received... exchanging for token...";
+  const verifier = localStorage.getItem("jstv_pkce_verifier");
+  try{
+    const body = new URLSearchParams();
+    body.append("grant_type", "authorization_code");
+    body.append("client_id", CLIENT_ID);
+    body.append("code", code);
+    body.append("redirect_uri", REDIRECT);
+    if(verifier) body.append("code_verifier", verifier);
+
+    const res = await fetch("https://api.restream.io/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString()
+    });
+    const data = await res.json();
+    if(data.access_token){
+      localStorage.setItem("jstv_restream_token", data.access_token);
+      localStorage.setItem("jstv_restream_refresh", data.refresh_token || "");
+      localStorage.setItem("jstv_restream_code", code);
+      msg.innerText = "✅ Connected! Token saved. Going back to Studio...";
+    } else {
+      // If token exchange fails, still save code so Step 8 can debug
+      localStorage.setItem("jstv_restream_code", code);
+      msg.innerText = "Code saved but token failed: " + JSON.stringify(data) + " - Going back...";
+    }
+  }catch(e){
+    localStorage.setItem("jstv_restream_code", code);
+    msg.innerText = "Token error: " + e.message + " - Code saved, going back...";
+  }
   document.getElementById("backBtn").style.display="block";
-  setTimeout(()=>{ window.location.href="index.html"; }, 1500);
+  setTimeout(()=>{ window.location.href="index.html"; }, 2000);
 }
 run();
 </script>
