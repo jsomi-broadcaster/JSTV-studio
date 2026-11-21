@@ -243,6 +243,7 @@ function initFirebaseNow(){
         document.getElementById('goLiveUser').innerText=user.displayName||user.email;
         document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
         document.getElementById('logoutBtn').style.display='block';
+        setTimeout(loadMyRestream, 500);
         if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
       } else {
         document.getElementById('userInfo').innerText='Not logged in';
@@ -345,11 +346,31 @@ function applyTicker(){const t=document.getElementById('tickerInput').value;if(t
 function switchCamera(){facing=facing==='user'?'environment':'user';startCam();}
 function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forEach(t=>t.enabled=micOn);alert(micOn?'Mic ON':'Mic OFF');}
 function saveConnect(){
-  localStorage.setItem('jstv_whip',document.getElementById('whipUrl').value);
-  localStorage.setItem('jstv_playback',document.getElementById('playbackUrl').value);
-  localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);
-  localStorage.setItem('jstv_key',document.getElementById('streamKey').value);
-  document.getElementById('connectStatus').innerText='✅ Saved! WHIP + Restream saved.';
+  var userKey = currentUser ? (currentUser.email || currentUser.uid) : 'guest';
+  localStorage.setItem('jstv_whip_' + userKey, document.getElementById('whipUrl').value);
+  localStorage.setItem('jstv_playback_' + userKey, document.getElementById('playbackUrl').value);
+  localStorage.setItem('jstv_rtmp_' + userKey, document.getElementById('rtmpUrl').value);
+  localStorage.setItem('jstv_key_' + userKey, document.getElementById('streamKey').value);
+  localStorage.setItem('jstv_whip', document.getElementById('whipUrl').value);
+  localStorage.setItem('jstv_playback', document.getElementById('playbackUrl').value);
+  localStorage.setItem('jstv_rtmp', document.getElementById('rtmpUrl').value);
+  localStorage.setItem('jstv_key', document.getElementById('streamKey').value);
+  document.getElementById('connectStatus').innerText = '✅ Saved for ' + userKey + ' - Your Restream connected.';
+}
+function loadMyRestream(){
+  if(!currentUser) return;
+  var userKey = currentUser.email || currentUser.uid;
+  var myKey = localStorage.getItem('jstv_key_' + userKey);
+  if(myKey){
+    document.getElementById('streamKey').value = myKey;
+    document.getElementById('rtmpUrl').value = localStorage.getItem('jstv_rtmp_' + userKey) || 'rtmp://live.restream.io/live';
+    document.getElementById('whipUrl').value = localStorage.getItem('jstv_whip_' + userKey) || '';
+    document.getElementById('playbackUrl').value = localStorage.getItem('jstv_playback_' + userKey) || '';
+    document.getElementById('connectStatus').innerText = '✅ Welcome back ' + userKey + ' - Your Restream auto-connected, no key to paste.';
+  } else {
+    document.getElementById('streamKey').value = '';
+    document.getElementById('connectStatus').innerText = 'Login with your Restream key once - next time it will auto-connect.';
+  }
 }
 function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
 function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
