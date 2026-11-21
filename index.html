@@ -46,12 +46,14 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
+/* --- FLOATING ORIENTATION BUTTON - ALWAYS VISIBLE --- */
+#orientBtnFloat{position:absolute;top:12px;right:12px;z-index:50;background:#FFD700;color:#000;border:2px solid #000;padding:10px 14px;border-radius:20px;font-weight:900;font-size:14px;box-shadow:0 2px 8px #000;display:block}
+#app.is-live #orientBtnFloat{display:block!important}
 /* --- WHOLE SCREEN ORIENTATION - AUTO + MANUAL BUTTON --- */
 #app{width:100%;height:100%;display:flex;flex-direction:column}
 #mainScreen{width:100%;height:100%;display:flex;flex-direction:column}
 #stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;width:100%;overflow:hidden}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
-/* AUTO - when no button pressed */
 @media (orientation: portrait){
   #app:not(.force-landscape){flex-direction:column}
   #app:not(.force-landscape) #mainScreen{flex-direction:column}
@@ -70,7 +72,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
   #app:not(.force-portrait) #toolbar{flex-direction:column;width:180px;overflow-y:auto}
   #app:not(.force-portrait) #nav{flex-direction:column;width:180px}
 }
-/* MANUAL - BUTTON FORCES IT, EVEN IF PHONE DOES NOT SENSE */
 #app.force-portrait{flex-direction:column!important}
 #app.force-portrait #mainScreen{flex-direction:column!important}
 #app.force-portrait #stage{width:100%!important;height:100%!important;flex:1!important;flex-direction:column!important}
@@ -128,6 +129,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <img id="logoOverlay" src="logo.png" alt="JSTV Logo">
 <div id="titleOverlay">JSTV LIVE</div>
 <div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div>
+<button id="orientBtnFloat" onclick="toggleOrientation()">↔ ROTATE</button>
 <div id="liveTopBar">
 <div style="display:flex;justify-content:space-between;align-items:center">
 <div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div>
@@ -143,6 +145,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button id="goLive" onclick="openGoLivePopup()">Ready</button>
 </div>
 <div id="toolbar" style="display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;width:100%">
+<button id="orientBtn" onclick="toggleOrientation()" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">↔ Rotate: AUTO</button>
 <button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">➕ Title</button>
 <button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🖼️ Logo</button>
 <button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">📁 File</button>
@@ -150,7 +153,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">🎬 My Studio</button>
 <button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🔄 Flip Cam</button>
 <button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
-<button id="orientBtn" onclick="toggleOrientation()" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">↔ Rotate: AUTO</button>
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
 </div>
 <div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
@@ -248,9 +250,10 @@ function fixCamRotation(){
 function toggleOrientation(){
   const app=document.getElementById('app');
   const btn=document.getElementById('orientBtn');
-  if(orientMode==='auto'){orientMode='portrait';app.classList.remove('force-landscape');app.classList.add('force-portrait');btn.innerText='↕ Portrait';}
-  else if(orientMode==='portrait'){orientMode='landscape';app.classList.remove('force-portrait');app.classList.add('force-landscape');btn.innerText='↔ Landscape';}
-  else{orientMode='auto';app.classList.remove('force-portrait','force-landscape');btn.innerText='↔ Rotate: AUTO';}
+  const floatBtn=document.getElementById('orientBtnFloat');
+  if(orientMode==='auto'){orientMode='portrait';app.classList.remove('force-landscape');app.classList.add('force-portrait');if(btn)btn.innerText='↕ Portrait';if(floatBtn)floatBtn.innerText='↕ PORTRAIT';}
+  else if(orientMode==='portrait'){orientMode='landscape';app.classList.remove('force-portrait');app.classList.add('force-landscape');if(btn)btn.innerText='↔ Landscape';if(floatBtn)floatBtn.innerText='↔ LANDSCAPE';}
+  else{orientMode='auto';app.classList.remove('force-portrait','force-landscape');if(btn)btn.innerText='↔ Rotate: AUTO';if(floatBtn)floatBtn.innerText='↔ ROTATE';}
 }
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
