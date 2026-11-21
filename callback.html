@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Connecting...</title></head>
-<body style="background:#000;color:#fff;font-family:sans-serif;text-align:center;padding:40px">
-<h2>Connecting to JSTV...</h2>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSTV - Connecting...</title>
+<style>body{background:#000;color:#fff;font-family:Arial;text-align:center;padding:40px;font-size:24px}button{padding:14px 30px;border:none;border-radius:30px;background:#FFD700;color:#000;font-weight:900;font-size:24px}</style>
+</head>
+<body>
+<h2>JSTV - Connecting to Restream...</h2>
+<p id="msg">Please wait...</p>
+<button onclick="window.location.href='index.html'" style="display:none" id="backBtn">⬅ Back to JSTV Studio</button>
 <script>
-const code = new URLSearchParams(location.search).get("code");
-if(code){
+const CLIENT_ID = "e3352741-91a2-455a-a52b-97c66f34ef76";
+const REDIRECT = "https://jsomi-broadcaster.github.io/JSTV-studio/callback.html";
+async function run(){
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const error = params.get("error");
+  const msg = document.getElementById("msg");
+  if(error){ msg.innerText = "Restream error: " + error; document.getElementById("backBtn").style.display="block"; return; }
+  if(!code){ msg.innerText = "No code received. Go back and tap Connect again."; document.getElementById("backBtn").style.display="block"; return; }
+  // Save code for now - Step 4 will exchange it for token
+  localStorage.setItem("jstv_restream_code", code);
   localStorage.setItem("jstv_code", code);
-  localStorage.setItem("jstv_restream_code_guest", code);
-  setTimeout(()=>{ location.href="index.html?code="+code; },500);
-} else { document.body.innerHTML += "<p>No code. Go back.</p>"; }
+  msg.innerText = "✅ Code received! Saved. Going back to Studio...";
+  document.getElementById("backBtn").style.display="block";
+  setTimeout(()=>{ window.location.href="index.html"; }, 1500);
+}
+run();
 </script>
-</body></html>
+</body>
+</html>
