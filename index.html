@@ -64,7 +64,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <img src="logo.png" class="jstvLogo" alt="JSTV">
 <div style="font-size:36px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400;font-size:36px">Live Studio</span></div>
 <p style="color:#aaa;margin-top:8px;font-size:24px">Powerful video production kit for creators</p>
-<p style="color:#FFD700;margin-top:12px;font-size:24px;font-weight:bold">JSTV BROADCASTER STUDIO</p>
+<p style="color:#FFD700;margin-top:12px;font-size:24px;font-weight:bold">JSTV BROADCASTER STUDIO - VERSION 3.0</p>
 <p id="authStatusSplash" style="font-size:24px;color:#8f8;margin-top:10px"></p>
 </div>
 <div id="permScreen" class="screen" style="background:#000;justify-content:flex-start;padding-top:40px">
@@ -79,8 +79,9 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="loginScreen" class="screen" style="background:#111">
 <img src="logo.png" class="jstvLogo" alt="JSTV">
 <h2 style="font-size:36px;margin-top:8px">JSTV <span style="font-weight:400;font-size:36px">Live Studio</span></h2>
-<p style="color:#aaa;margin:6px 0 20px;font-size:24px">Powerful video production kit for creators</p>
+<p style="color:#aaa;margin:6px 0 20px;font-size:24px">Powerful video production kit for creators - VERSION 3.0 - REAL KEY INSIDE</p>
 <p id="loginError" style="font-size:24px;color:#ff6b6b;max-width:340px;text-align:center"></p>
+<p id="firebaseStatus" style="font-size:24px;color:#8f8;max-width:340px;text-align:center"></p>
 <button class="btn" onclick="loginGoogle()">Google - Continue with Google</button>
 <p style="margin:12px;color:#aaa;font-size:24px">OR</p>
 <input id="emailInput" type="email" placeholder="Email - e.g. you@gmail.com">
@@ -128,7 +129,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">🎤 Mic</button>
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">⚙️ Settings</button>
 </div>
-<div id="connectPanel" class="panel"><h3>CONNECT - REAL LIVE</h3><label style="font-size:24px">Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label style="font-size:24px">WHIP URL - Cloudflare Stream</label><input id="whipUrl" placeholder="https://customer-xxxx.live.cloudflare.com/.../whip"><label style="font-size:24px">Playback URL - Share this link</label><input id="playbackUrl" placeholder="https://customer-xxxx.cloudflarestream.com/.../watch"><label style="font-size:24px">Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label style="font-size:24px">Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:24px;color:#8f8"></p><p style="font-size:24px;color:#aaa;margin-top:8px">WHIP = Real live from browser. Restream RTMP = Use Restream app / OBS for RTMP, or paste Restream WHIP if you have it.</p></div>
+<div id="connectPanel" class="panel"><h3>CONNECT - REAL LIVE</h3><label style="font-size:24px">Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label style="font-size:24px">WHIP URL - Cloudflare Stream</label><input id="whipUrl" placeholder="https://customer-xxxx.live.cloudflare.com/.../whip"><label style="font-size:24px">Playback URL - Share this link</label><input id="playbackUrl" placeholder="https://customer-xxxx.cloudflarestream.com/.../watch"><label style="font-size:24px">Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label style="font-size:24px">Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:24px;color:#8f8"></p></div>
 <div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:24px;color:#aaa">Status: <span id="liveStatus" style="font-size:24px">Ready - Camera On - Logo ON - Studio Ready</span></p><p style="font-size:24px;color:#FFD700">Tip: Drag Logo / Title / Ticker on live screen to move. Drag yellow corner to resize.</p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
@@ -141,7 +142,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <p style="font-size:24px">JSTV BROADCASTER STUDIO - Real Logo - 50%</p>
 </div>
 <label style="font-size:24px">Logo Size - Drag or Slide</label><input type="range" id="logoSize" min="50" max="400" value="200" oninput="resizeLogo()">
-<p style="font-size:24px;color:#aaa">To change logo: Replace logo.png in GitHub with new image, same name.</p>
 <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
 <button onclick="showLogo()" style="background:#333">👁️ Show Logo</button>
 <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
@@ -171,7 +171,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <p style="margin-top:10px;font-size:24px">Live</p>
 <p style="font-size:24px">Use live status indicator <span style="color:#D4FF00;font-size:24px">ON</span></p>
 <p style="font-size:24px">Save video after streaming <span style="color:#aaa;font-size:24px">OFF</span></p>
-<p style="font-size:24px">App version: 5.4.3 - STUDIO</p>
+<p style="font-size:24px">App version: 5.4.3 - STUDIO - VERSION 3.0</p>
 <button onclick="logoutUser()" style="background:#b00">Log out</button>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
@@ -229,13 +229,12 @@ const firebaseConfig = {
 let DEFAULT_WHIP = "PASTE YOUR WHIP URL";
 let DEFAULT_PLAYBACK = "PASTE YOUR PLAYBACK URL";
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
-let pc=null, currentUser=null, firebaseReady=false;
-function ensureFirebase(){
-  if(firebaseReady) return true;
+let pc=null, currentUser=null;
+function initFirebaseNow(){
   try{
-    if(typeof firebase==='undefined'){ document.getElementById('loginError').innerText='Firebase script did not load - check internet'; return false; }
+    if(typeof firebase==='undefined'){ document.getElementById('loginError').innerText='Firebase script blocked - check internet'; return false; }
     if(!firebase.apps || firebase.apps.length===0){ firebase.initializeApp(firebaseConfig); }
-    firebaseReady=true;
+    document.getElementById('firebaseStatus').innerText='Firebase OK - JSTV App connected';
     firebase.auth().onAuthStateChanged(function(user){
       currentUser=user;
       if(user){
@@ -252,13 +251,13 @@ function ensureFirebase(){
       }
     });
     return true;
-  }catch(e){ document.getElementById('loginError').innerText='Auth setup error: '+e.message; return false; }
+  }catch(e){ document.getElementById('loginError').innerText='Init: '+e.message; return false; }
 }
-ensureFirebase();
+initFirebaseNow();
 async function loginGoogle(){
   try{
     document.getElementById('loginError').innerText='';
-    if(!ensureFirebase()) return;
+    if(!initFirebaseNow()) return;
     let provider=new firebase.auth.GoogleAuthProvider();
     let res=await firebase.auth().signInWithPopup(provider);
     currentUser=res.user; showScreen('mainScreen'); startCam();
@@ -266,7 +265,7 @@ async function loginGoogle(){
 }
 async function signupEmail(){
   try{
-    if(!ensureFirebase()) return;
+    if(!initFirebaseNow()) return;
     let email=document.getElementById('emailInput').value.trim();
     let pass=document.getElementById('passwordInput').value;
     if(!email||!pass) return document.getElementById('loginError').innerText='Type email + password first';
@@ -276,7 +275,7 @@ async function signupEmail(){
 }
 async function loginEmail(){
   try{
-    if(!ensureFirebase()) return;
+    if(!initFirebaseNow()) return;
     let email=document.getElementById('emailInput').value.trim();
     let pass=document.getElementById('passwordInput').value;
     if(!email||!pass) return document.getElementById('loginError').innerText='Type email + password first';
@@ -285,7 +284,7 @@ async function loginEmail(){
   }catch(e){ document.getElementById('loginError').innerText=e.message; }
 }
 async function logoutUser(){
-  try{ if(ensureFirebase()) await firebase.auth().signOut(); }catch(e){}
+  try{ await firebase.auth().signOut(); }catch(e){}
   currentUser=null; showScreen('loginScreen');
 }
 function fixCamRotation(){
