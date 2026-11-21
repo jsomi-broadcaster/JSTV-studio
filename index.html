@@ -8,7 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
 body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
-#app{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
+#app{width:100%;height:100%;position:relative}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
 #logoOverlay{position:absolute;top:12px;left:12px;width:90px;height:90px;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
@@ -46,49 +46,26 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
-/* FIXED: Floating button always on top, above live bar */
-#orientBtnFloat{position:absolute;top:12px;right:12px;z-index:60!important;background:#FFD700;color:#000;border:2px solid #000;padding:10px 14px;border-radius:20px;font-weight:900;font-size:14px;box-shadow:0 2px 8px #000;display:block}
+#orientBtnFloat{position:absolute;top:12px;right:12px;z-index:60;background:#FFD700;color:#000;border:2px solid #000;padding:10px 14px;border-radius:20px;font-weight:900;font-size:14px;box-shadow:0 2px 8px #000;display:block}
 #app.is-live #orientBtnFloat{display:block!important}
-/* FIXED: Toolbar / Nav styles moved from inline to CSS so orientation can override */
 #toolbar{display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;width:100%}
-#mainScreen{width:100%;height:100%;display:flex;flex-direction:column;padding:0!important;justify-content:flex-start}
-/* WHOLE SCREEN ORIENTATION - AUTO + MANUAL - ALL WITH !important SO INLINE CANNOT BLOCK */
-@media (orientation: portrait){
-  #app:not(.force-landscape){flex-direction:column!important}
-  #app:not(.force-landscape) #mainScreen{flex-direction:column!important}
-  #app:not(.force-landscape) #stage{width:100%!important;height:100%!important;flex:1!important;flex-direction:column!important}
-  #app:not(.force-landscape) #cam{width:100%!important;height:100%!important;object-fit:cover!important}
-  #app:not(.force-landscape) #logoOverlay{width:140px!important;height:140px!important}
-  #app:not(.force-landscape) #toolbar{flex-direction:row!important;width:100%!important;overflow-x:auto!important;overflow-y:hidden!important}
-  #app:not(.force-landscape) #nav{flex-direction:row!important;width:100%!important}
-  #app:not(.force-landscape) .panel{width:100%!important;max-height:42vh!important}
-}
-@media (orientation: landscape){
-  #app:not(.force-portrait){flex-direction:row!important}
-  #app:not(.force-portrait) #mainScreen{flex-direction:row!important;flex-wrap:wrap!important}
-  #app:not(.force-portrait) #stage{flex:1 1 60%!important;width:60%!important;height:100%!important;flex-direction:row!important}
-  #app:not(.force-portrait) #cam{width:100%!important;height:100%!important;object-fit:cover!important}
-  #app:not(.force-portrait) #logoOverlay{width:90px!important;height:90px!important}
-  #app:not(.force-portrait) #toolbar{flex-direction:column!important;width:180px!important;overflow-y:auto!important;overflow-x:hidden!important}
-  #app:not(.force-portrait) #nav{flex-direction:column!important;width:180px!important}
-  #app:not(.force-portrait) .panel{width:220px!important;max-height:100%!important}
-}
-#app.force-portrait{flex-direction:column!important}
-#app.force-portrait #mainScreen{flex-direction:column!important}
-#app.force-portrait #stage{width:100%!important;height:100%!important;flex:1!important;flex-direction:column!important}
-#app.force-portrait #cam{width:100%!important;height:100%!important;object-fit:cover!important}
-#app.force-portrait #logoOverlay{width:140px!important;height:140px!important}
-#app.force-portrait #toolbar{flex-direction:row!important;width:100%!important;overflow-x:auto!important}
-#app.force-portrait #nav{flex-direction:row!important;width:100%!important}
-#app.force-portrait .panel{width:100%!important;max-height:42vh!important}
-#app.force-landscape{flex-direction:row!important}
-#app.force-landscape #mainScreen{flex-direction:row!important;flex-wrap:wrap!important}
-#app.force-landscape #stage{flex:1 1 60%!important;width:60%!important;height:100%!important;flex-direction:row!important}
-#app.force-landscape #cam{width:100%!important;height:100%!important;object-fit:cover!important}
-#app.force-landscape #logoOverlay{width:90px!important;height:90px!important}
-#app.force-landscape #toolbar{flex-direction:column!important;width:180px!important;overflow-y:auto!important}
-#app.force-landscape #nav{flex-direction:column!important;width:180px!important}
-#app.force-landscape .panel{width:220px!important;max-height:100%!important}
+/* FIXED: Orientation ONLY on #mainScreen.active - NEVER on #app, NEVER on all screens */
+/* MainScreen layout - only when active */
+#mainScreen.active{padding:0;justify-content:flex-start;flex-direction:column}
+/* PORTRAIT - Main only */
+#mainScreen.active:not(.force-landscape){flex-direction:column}
+#mainScreen.active:not(.force-landscape) #stage{width:100%;height:100%;flex:1}
+#mainScreen.active:not(.force-landscape) #cam{width:100%;height:100%;object-fit:cover}
+#mainScreen.active:not(.force-landscape) #logoOverlay{width:140px;height:140px}
+/* LANDSCAPE - Main only - Stage STAYS 100%, no 60%, no black bars */
+#mainScreen.active.force-landscape{flex-direction:column}
+#mainScreen.active.force-landscape #stage{width:100%;height:100%;flex:1}
+#mainScreen.active.force-landscape #cam{width:100%;height:100%;object-fit:cover}
+#mainScreen.active.force-landscape #logoOverlay{width:90px;height:90px}
+#mainScreen.active.force-portrait{flex-direction:column}
+#mainScreen.active.force-portrait #stage{width:100%;height:100%;flex:1}
+#mainScreen.active.force-portrait #cam{width:100%;height:100%;object-fit:cover}
+#mainScreen.active.force-portrait #logoOverlay{width:140px;height:140px}
 </style>
 </head>
 <body>
@@ -251,12 +228,12 @@ function fixCamRotation(){
   cam.style.transform=(facing==='user')?'scaleX(-1)':'none';
 }
 function toggleOrientation(){
-  const app=document.getElementById('app');
+  const main=document.getElementById('mainScreen');
   const btn=document.getElementById('orientBtn');
   const floatBtn=document.getElementById('orientBtnFloat');
-  if(orientMode==='auto'){orientMode='portrait';app.classList.remove('force-landscape');app.classList.add('force-portrait');if(btn)btn.innerText='↕ Portrait';if(floatBtn)floatBtn.innerText='↕ PORTRAIT';}
-  else if(orientMode==='portrait'){orientMode='landscape';app.classList.remove('force-portrait');app.classList.add('force-landscape');if(btn)btn.innerText='↔ Landscape';if(floatBtn)floatBtn.innerText='↔ LANDSCAPE';}
-  else{orientMode='auto';app.classList.remove('force-portrait','force-landscape');if(btn)btn.innerText='↔ Rotate: AUTO';if(floatBtn)floatBtn.innerText='↔ ROTATE';}
+  if(orientMode==='auto'){orientMode='portrait';main.classList.remove('force-landscape');main.classList.add('force-portrait');if(btn)btn.innerText='↕ Portrait';if(floatBtn)floatBtn.innerText='↕ PORTRAIT';}
+  else if(orientMode==='portrait'){orientMode='landscape';main.classList.remove('force-portrait');main.classList.add('force-landscape');if(btn)btn.innerText='↔ Landscape';if(floatBtn)floatBtn.innerText='↔ LANDSCAPE';}
+  else{orientMode='auto';main.classList.remove('force-portrait','force-landscape');if(btn)btn.innerText='↔ Rotate: AUTO';if(floatBtn)floatBtn.innerText='↔ ROTATE';}
 }
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
