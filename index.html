@@ -218,7 +218,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
-/* ===== YOUR REAL JSTV App KEYS ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyDjm8Rn-QK69vL08E4YN2eAKsnJ0QMut7c",
   authDomain: "jstv-app-5cbfe.firebaseapp.com",
@@ -229,38 +228,45 @@ const firebaseConfig = {
 };
 let DEFAULT_WHIP = "PASTE YOUR WHIP URL";
 let DEFAULT_PLAYBACK = "PASTE YOUR PLAYBACK URL";
-/* ===== END ===== */
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
-let pc=null, currentUser=null;
-try{
-  firebase.initializeApp(firebaseConfig);
-  firebase.auth().onAuthStateChanged(function(user){
-    currentUser=user;
-    if(user){
-      document.getElementById('userInfo').innerText='Logged in as: '+(user.displayName||user.email);
-      document.getElementById('settingsUser').innerText=user.displayName||user.email;
-      document.getElementById('goLiveUser').innerText=user.displayName||user.email;
-      document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
-      document.getElementById('logoutBtn').style.display='block';
-      if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
-    } else {
-      document.getElementById('userInfo').innerText='Not logged in';
-      document.getElementById('settingsUser').innerText='Not logged in';
-      document.getElementById('logoutBtn').style.display='none';
-    }
-  });
-}catch(e){ document.getElementById('loginError').innerText='Auth setup error: '+e.message; }
+let pc=null, currentUser=null, firebaseReady=false;
+function ensureFirebase(){
+  if(firebaseReady) return true;
+  try{
+    if(typeof firebase==='undefined'){ document.getElementById('loginError').innerText='Firebase script did not load - check internet'; return false; }
+    if(!firebase.apps || firebase.apps.length===0){ firebase.initializeApp(firebaseConfig); }
+    firebaseReady=true;
+    firebase.auth().onAuthStateChanged(function(user){
+      currentUser=user;
+      if(user){
+        document.getElementById('userInfo').innerText='Logged in as: '+(user.displayName||user.email);
+        document.getElementById('settingsUser').innerText=user.displayName||user.email;
+        document.getElementById('goLiveUser').innerText=user.displayName||user.email;
+        document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
+        document.getElementById('logoutBtn').style.display='block';
+        if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
+      } else {
+        document.getElementById('userInfo').innerText='Not logged in';
+        document.getElementById('settingsUser').innerText='Not logged in';
+        document.getElementById('logoutBtn').style.display='none';
+      }
+    });
+    return true;
+  }catch(e){ document.getElementById('loginError').innerText='Auth setup error: '+e.message; return false; }
+}
+ensureFirebase();
 async function loginGoogle(){
   try{
     document.getElementById('loginError').innerText='';
+    if(!ensureFirebase()) return;
     let provider=new firebase.auth.GoogleAuthProvider();
     let res=await firebase.auth().signInWithPopup(provider);
-    currentUser=res.user;
-    showScreen('mainScreen'); startCam();
+    currentUser=res.user; showScreen('mainScreen'); startCam();
   }catch(e){ document.getElementById('loginError').innerText=e.message; }
 }
 async function signupEmail(){
   try{
+    if(!ensureFirebase()) return;
     let email=document.getElementById('emailInput').value.trim();
     let pass=document.getElementById('passwordInput').value;
     if(!email||!pass) return document.getElementById('loginError').innerText='Type email + password first';
@@ -270,6 +276,7 @@ async function signupEmail(){
 }
 async function loginEmail(){
   try{
+    if(!ensureFirebase()) return;
     let email=document.getElementById('emailInput').value.trim();
     let pass=document.getElementById('passwordInput').value;
     if(!email||!pass) return document.getElementById('loginError').innerText='Type email + password first';
@@ -278,7 +285,7 @@ async function loginEmail(){
   }catch(e){ document.getElementById('loginError').innerText=e.message; }
 }
 async function logoutUser(){
-  try{ await firebase.auth().signOut(); }catch(e){}
+  try{ if(ensureFirebase()) await firebase.auth().signOut(); }catch(e){}
   currentUser=null; showScreen('loginScreen');
 }
 function fixCamRotation(){
