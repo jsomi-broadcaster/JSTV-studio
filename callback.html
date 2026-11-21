@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Connecting...</title></head>
+<body style="background:#000;color:#fff;font-family:sans-serif;text-align:center;padding:40px">
+<h2>Connecting to JSTV...</h2>
+<script>
+const code = new URLSearchParams(location.search).get("code");
+if(code){
+  localStorage.setItem("jstv_code", code);
+  localStorage.setItem("jstv_restream_code_guest", code);
+  setTimeout(()=>{ location.href="index.html?code="+code; },500);
+} else { document.body.innerHTML += "<p>No code. Go back.</p>"; }
+</script>
+</body></html>
