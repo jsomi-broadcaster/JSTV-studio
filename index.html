@@ -5,38 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>JSTV Studio - Studio</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;font-size:24px}
 html,body{height:100%;width:100%;overflow:hidden;background:#000}
-body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw}
+body{background:#000;color:#fff;overflow:hidden;height:100dvh;width:100vw;font-size:24px}
+p,span,button,input,label,div,a,small{font-size:24px}
+h2{font-size:32px}
+h3{font-size:28px}
 #app{width:100%;height:100%;position:relative}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
 #stage{flex:1;position:relative;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%}
-/* LOGO 50% SCREEN - PORTRAIT */
-#logoOverlay{position:absolute;top:12px;left:12px;width:50vw;height:50vw;max-width:50%;max-height:50%;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
-.jstvLogo{width:50vw;height:50vw;max-width:220px;max-height:220px;object-fit:contain;border-radius:50%}
+#logoOverlay{position:absolute;top:12px;left:12px;width:50vw;height:50vw;max-width:50%;object-fit:contain;display:block;z-index:10;border-radius:50%;filter:drop-shadow(2px 2px 3px #000)}
+.jstvLogo{width:50vw;height:50vw;max-width:320px;max-height:320px;object-fit:contain;border-radius:50%}
 .jstvLogoSmall{width:60px;height:60px;object-fit:contain;border-radius:50%}
-#titleOverlay{position:absolute;top:50px;left:0;right:0;text-align:center;font-size:22px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
+#titleOverlay{position:absolute;top:50px;left:0;right:0;text-align:center;font-size:32px;font-weight:900;text-shadow:2px 2px 4px #000;z-index:9}
 #ticker{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);padding:8px;white-space:nowrap;overflow:hidden;z-index:9}
-#ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold}
+#ticker span{display:inline-block;animation:scroll 15s linear infinite;color:#FFD700;font-weight:bold;font-size:24px}
 @keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
 .screen{display:none;position:absolute;inset:0;height:100%;width:100%;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#000;z-index:1}
 .screen.active{display:flex;z-index:2}
-.btn{width:100%;max-width:340px;padding:14px;margin:6px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:16px}
+.btn{width:100%;max-width:340px;padding:14px;margin:6px 0;border:none;border-radius:30px;background:#fff;color:#000;font-weight:bold;font-size:24px}
 .btnDark{background:#222;color:#fff;border:1px solid #444}
-input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff}
+input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;border:none;background:#222;color:#fff;font-size:24px}
 .panel{display:none;padding:12px;background:#111;max-height:42vh;overflow-y:auto;width:100%}
 .panel.active{display:block}
-.panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold}
+.panel button{width:100%;padding:11px;margin-top:6px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-weight:bold;font-size:24px}
 #nav{display:flex;background:#000;border-top:1px solid #333;width:100%}
-#nav button{flex:1;padding:14px 2px;background:none;border:none;color:#888;font-size:12px;font-weight:bold}
+#nav button{flex:1;padding:14px 2px;background:none;border:none;color:#888;font-size:24px;font-weight:bold}
 #nav button.active{color:#fff;border-top:3px solid #FFD700;background:#1a1a1a}
-#goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:18px}
-.modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold}
+#goLive{position:absolute;bottom:110px;left:0;right:0;margin:0 auto;width:fit-content;background:#fff;color:#000;border:none;padding:12px 40px;border-radius:30px;font-weight:900;z-index:20;font-size:28px}
+.modeBtn{padding:10px 18px;border-radius:20px;border:none;background:#333;color:#fff;font-weight:bold;font-size:24px}
 .modeBtn.on{background:#fff;color:#000}
 #goLivePopup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:100}
 #goLivePopup.show{display:flex}
 #goLiveCard{background:#1e1e1e;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:16px}
-#goLiveCard .goBtn{background:#D4FF00;color:#000;border:none;width:100%;padding:16px;border-radius:30px;font-weight:900;font-size:18px;margin-top:12px}
+#goLiveCard .goBtn{background:#D4FF00;color:#000;border:none;width:100%;padding:16px;border-radius:30px;font-weight:900;font-size:28px;margin-top:12px}
 #startingScreen{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:110;text-align:center;padding:20px}
 #startingScreen.show{display:flex}
 #countScreen{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:110}
@@ -45,10 +47,9 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #liveTopBar{position:absolute;top:0;left:0;right:0;display:none;z-index:30;padding:8px;background:rgba(0,0,0,.4)}
 #app.is-live #liveTopBar{display:block}
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
-.studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
+.studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:24px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
 #toolbar{display:flex;gap:6px;padding:8px;background:#1a1a1a;overflow-x:auto;width:100%}
-/* NO ORIENTATION - REMOVED COMPLETELY */
 #mainScreen.active{padding:0;justify-content:flex-start;flex-direction:column}
 </style>
 </head>
@@ -56,36 +57,26 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="app">
 <div id="splashScreen" class="screen active" style="background:#000">
 <img src="logo.png" class="jstvLogo" alt="JSTV">
-<div style="font-size:32px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400">Live Studio</span></div>
-<p style="color:#aaa;margin-top:8px">Powerful video production kit for creators</p>
-<p style="color:#FFD700;margin-top:12px;font-size:13px;font-weight:bold">JSTV BROADCASTER STUDIO</p>
+<div style="font-size:32px;font-weight:900;margin-top:10px">JSTV <span style="font-weight:400;font-size:32px">Live Studio</span></div>
+<p style="color:#aaa;margin-top:8px;font-size:24px">Powerful video production kit for creators</p>
+<p style="color:#FFD700;margin-top:12px;font-size:24px;font-weight:bold">JSTV BROADCASTER STUDIO</p>
 </div>
 <div id="permScreen" class="screen" style="background:#000;justify-content:flex-start;padding-top:40px">
 <div style="background:#fff;color:#000;border-radius:8px;padding:20px;max-width:340px;width:100%">
 <h3>Please grant the following permission to use JSTV app.</h3>
-<p style="margin-top:16px">1. Camera (Required)</p><p style="font-size:13px;color:#777">For live streaming, video recording, and photo shoots.</p>
-<p style="margin-top:12px">2. Microphone (Required)</p><p style="font-size:13px;color:#777">For voice recording during live streaming.</p>
-<p style="margin-top:12px">3. Notifications</p><p style="font-size:13px;color:#777">For information related to Live Streaming.</p>
-<div style="text-align:right;margin-top:10px"><button onclick="showScreen('loginScreen')" style="background:none;border:none;color:#008080;font-weight:bold;font-size:16px">OK</button></div>
+<p style="margin-top:16px;font-size:24px">1. Camera (Required)</p><p style="font-size:24px;color:#777">For live streaming, video recording, and photo shoots.</p>
+<p style="margin-top:12px;font-size:24px">2. Microphone (Required)</p><p style="font-size:24px;color:#777">For voice recording during live streaming.</p>
+<p style="margin-top:12px;font-size:24px">3. Notifications</p><p style="font-size:24px;color:#777">For information related to Live Streaming.</p>
+<div style="text-align:right;margin-top:10px"><button onclick="showScreen('loginScreen')" style="background:none;border:none;color:#008080;font-weight:bold;font-size:24px">OK</button></div>
 </div>
 </div>
 <div id="loginScreen" class="screen" style="background:#111">
 <img src="logo.png" class="jstvLogo" alt="JSTV">
-<h2 style="font-size:28px;margin-top:8px">JSTV <span style="font-weight:400">Live Studio</span></h2>
-<p style="color:#aaa;margin:6px 0 20px">Powerful video production kit for creators</p>
-<!-- ALL LOGINS RESTORED -->
-<button class="btn" onclick="loginGo('Facebook')">Facebook - Continue with Facebook</button>
+<h2 style="font-size:32px;margin-top:8px">JSTV <span style="font-weight:400;font-size:32px">Live Studio</span></h2>
+<p style="color:#aaa;margin:6px 0 20px;font-size:24px">Powerful video production kit for creators</p>
 <button class="btn" onclick="loginGo('Google')">Google - Continue with Google</button>
-<button class="btn" onclick="loginGo('YouTube')">YouTube - Continue with YouTube</button>
-<button class="btn" onclick="loginGo('Twitch')">Twitch - Continue with Twitch</button>
-<button class="btn" onclick="loginGo('TikTok')">TikTok - Continue with TikTok</button>
-<button class="btn" onclick="loginGo('Instagram')">Instagram - Continue with Instagram</button>
-<button class="btn" onclick="loginGo('X')">X (Twitter) - Continue with X</button>
-<button class="btn" onclick="loginGo('Restream')">Restream - Continue with Restream</button>
-<button class="btn" onclick="loginGo('NAVER')">NAVER Cloud B2B - Continue with NAVER</button>
-<p style="margin:12px;color:#aaa">OR</p>
+<p style="margin:12px;color:#aaa;font-size:24px">OR</p>
 <button class="btn btnDark" onclick="loginGo('Email')">Sign up with email</button>
-<button class="btn btnDark" onclick="loginGo('Phone')">Sign up with phone</button>
 </div>
 <div id="mainScreen" class="screen">
 <div style="display:flex;width:100%;background:#111">
@@ -94,7 +85,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button class="studioTab" onclick="setStudioTab('text',this)">Text</button>
 <button class="studioTab" onclick="setStudioTab('widget',this)">Widget</button>
 </div>
-<p id="studioTabInfo" style="padding:6px 10px;font-size:12px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
+<p id="studioTabInfo" style="padding:6px 10px;font-size:24px;color:#FFD700;align-self:flex-start">My Studio - Media: Add your videos, images, music</p>
 <div id="stage">
 <video id="cam" autoplay playsinline muted></video>
 <img id="logoOverlay" src="logo.png" alt="JSTV Logo">
@@ -102,10 +93,10 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="ticker"><span id="tickerText">✦ WELCOME TO JSTV ✦ JESUS IS LORD ✦ SHARE THIS LIVE ✦</span></div>
 <div id="liveTopBar">
 <div style="display:flex;justify-content:space-between;align-items:center">
-<div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900">00:00</span> <span>👤 <span id="viewerCount">0</span> 👍 <span id="likeCount">0</span></span></div>
-<button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px">End</button>
+<div><span id="liveTimer" style="background:red;padding:4px 10px;border-radius:5px;font-weight:900;font-size:24px">00:00</span> <span style="font-size:24px">👤 <span id="viewerCount" style="font-size:24px">0</span> 👍 <span id="likeCount" style="font-size:24px">0</span></span></div>
+<button onclick="stopLive()" style="background:none;border:1px solid #fff;color:#fff;padding:6px 12px;border-radius:5px;font-size:24px">End</button>
 </div>
-<div style="font-size:12px;margin-top:4px">📶 <span id="fpsText">30 fps</span> • <span id="kbpsText">2300 kbps</span> • 🔋 44% • 🎤 STUDIO</div>
+<div style="font-size:24px;margin-top:4px">📶 <span id="fpsText" style="font-size:24px">30 fps</span> • <span id="kbpsText" style="font-size:24px">2300 kbps</span> • 🔋 44% • 🎤 STUDIO</div>
 </div>
 <div style="position:absolute;bottom:70px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:20">
 <button class="modeBtn" onclick="setSource('screen',this)">Screen</button>
@@ -115,29 +106,29 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button id="goLive" onclick="openGoLivePopup()">Ready</button>
 </div>
 <div id="toolbar">
-<button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">➕ Title</button>
-<button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🖼️ Logo</button>
-<button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">📁 File</button>
-<button onclick="showPanel('tickerPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">✦ Ticker</button>
-<button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">🎬 My Studio</button>
-<button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🔄 Flip Cam</button>
-<button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
-<button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
+<button onclick="showPanel('titlePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">➕ Title</button>
+<button onclick="showPanel('logoPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">🖼️ Logo</button>
+<button onclick="showPanel('filePanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">📁 File</button>
+<button onclick="showPanel('tickerPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">✦ Ticker</button>
+<button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold;font-size:24px">🎬 My Studio</button>
+<button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">🔄 Flip Cam</button>
+<button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">🎤 Mic</button>
+<button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">⚙️ Settings</button>
 </div>
-<div id="connectPanel" class="panel"><h3>CONNECT - RESTREAM + ALL PLATFORMS</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label>Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p><p style="font-size:12px;color:#aaa;margin-top:8px">Restream: Use your Restream RTMP + Key above to go live to all platforms at once.</p></div>
-<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:12px;color:#aaa">Status: <span id="liveStatus">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
+<div id="connectPanel" class="panel"><h3>CONNECT - RESTREAM + ALL PLATFORMS</h3><label style="font-size:24px">Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label style="font-size:24px">Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label style="font-size:24px">Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:24px;color:#8f8"></p><p style="font-size:24px;color:#aaa;margin-top:8px">Restream: Use your Restream RTMP + Key above to go live to all platforms at once.</p></div>
+<div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:24px;color:#aaa">Status: <span id="liveStatus" style="font-size:24px">Ready - Camera On - Logo ON - Studio Ready</span></p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
-<div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label>Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
+<div id="titlePanel" class="panel"><h3>Add Title</h3><input id="titleInput" placeholder="Type your title"><label style="font-size:24px">Title Color</label><input type="color" id="titleColor" value="#ffffff"><button onclick="applyTitle()">✅ Show Title</button><button onclick="hideTitle()" style="background:#333">❌ Hide Title</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="logoPanel" class="panel">
 <h3>Logo - YOUR REAL JSTV LOGO - 50% SCREEN</h3>
-<p style="font-size:13px;color:#aaa">Crown + JSTV BROADCASTER STUDIO - Your real logo from logo.png - Now 50% of screen</p>
+<p style="font-size:24px;color:#aaa">Crown + JSTV BROADCASTER STUDIO - Your real logo from logo.png - Now 50% of screen</p>
 <div style="text-align:center;background:#000;padding:12px;border-radius:10px;margin:8px 0">
 <img src="logo.png" style="width:50vw;height:50vw;max-width:200px;max-height:200px;object-fit:contain;border-radius:50%" alt="JSTV">
-<p>JSTV BROADCASTER STUDIO - Real Logo - 50%</p>
+<p style="font-size:24px">JSTV BROADCASTER STUDIO - Real Logo - 50%</p>
 </div>
-<label>Logo Size</label><input type="range" id="logoSize" min="50" max="400" value="200" oninput="resizeLogo()">
-<p style="font-size:12px;color:#aaa">To change logo: Replace logo.png in GitHub with new image, same name.</p>
+<label style="font-size:24px">Logo Size</label><input type="range" id="logoSize" min="50" max="400" value="200" oninput="resizeLogo()">
+<p style="font-size:24px;color:#aaa">To change logo: Replace logo.png in GitHub with new image, same name.</p>
 <button onclick="hideLogo()" style="background:#333">❌ Hide Logo</button>
 <button onclick="showLogo()" style="background:#333">👁️ Show Logo</button>
 <button onclick="showPanel('livePanel')" style="background:#333">Back</button>
@@ -146,28 +137,28 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="tickerPanel" class="panel"><h3>Edit Ticker</h3><input id="tickerInput" placeholder="Type ticker text"><button onclick="applyTicker()">✅ Update Ticker</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="studioPanel" class="panel">
 <h3>🎬 My Studio</h3>
-<p style="font-size:13px;color:#aaa">Add Media, Playlist, Text, Widget like before.</p>
-<p style="margin-top:10px"><b>Media</b></p><input type="file" id="studioMedia" accept="video/*,image/*,audio/*"><button onclick="addStudioMedia()">➕ Add to Studio</button>
-<p style="margin-top:10px"><b>Playlist</b></p><input id="playlistName" placeholder="Playlist name - e.g. Sunday Songs"><button onclick="addPlaylist()">➕ Create Playlist</button>
-<p style="margin-top:10px"><b>Text</b></p><input id="studioText" placeholder="Text Here - e.g. JESUS IS LORD"><button onclick="applyStudioText()">✅ Show Text on Live</button>
-<p style="margin-top:10px"><b>Widget</b></p><button onclick="addWidget()">➕ Add Widget - Chat / Donation / Clock</button>
-<div id="studioList" style="margin-top:10px;background:#222;padding:10px;border-radius:8px;font-size:13px">No items yet - Add your first media above</div>
+<p style="font-size:24px;color:#aaa">Add Media, Playlist, Text, Widget like before.</p>
+<p style="margin-top:10px;font-size:24px"><b style="font-size:24px">Media</b></p><input type="file" id="studioMedia" accept="video/*,image/*,audio/*"><button onclick="addStudioMedia()">➕ Add to Studio</button>
+<p style="margin-top:10px;font-size:24px"><b style="font-size:24px">Playlist</b></p><input id="playlistName" placeholder="Playlist name - e.g. Sunday Songs"><button onclick="addPlaylist()">➕ Create Playlist</button>
+<p style="margin-top:10px;font-size:24px"><b style="font-size:24px">Text</b></p><input id="studioText" placeholder="Text Here - e.g. JESUS IS LORD"><button onclick="applyStudioText()">✅ Show Text on Live</button>
+<p style="margin-top:10px;font-size:24px"><b style="font-size:24px">Widget</b></p><button onclick="addWidget()">➕ Add Widget - Chat / Donation / Clock</button>
+<div id="studioList" style="margin-top:10px;background:#222;padding:10px;border-radius:8px;font-size:24px">No items yet - Add your first media above</div>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
 <div id="settingsPanel" class="panel">
 <h3>Settings</h3>
-<p style="font-size:13px;color:#aaa">My account</p><p style="font-weight:bold">Apostle Kevin Favour</p><br>
-<p>Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px">></button></p>
-<p style="margin-top:10px">Save recent live title <span style="color:#D4FF00">ON</span></p>
-<p style="margin-top:10px">My Studio settings</p>
-<p>Auto play on overlay ></p>
-<p>Mute microphone on screen saver <span style="color:#D4FF00">ON</span></p>
-<p style="margin-top:10px">Screen resolution when connected: 720P</p>
-<p>Screen bitrate when connected: 5000 kbps</p>
-<p style="margin-top:10px">Live</p>
-<p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
-<p>Save video after streaming <span style="color:#aaa">OFF</span></p>
-<p>App version: 5.4.3 - STUDIO</p>
+<p style="font-size:24px;color:#aaa">My account</p><p style="font-weight:bold;font-size:24px">Apostle Kevin Favour</p><br>
+<p style="font-size:24px">Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px;font-size:24px">></button></p>
+<p style="margin-top:10px;font-size:24px">Save recent live title <span style="color:#D4FF00;font-size:24px">ON</span></p>
+<p style="margin-top:10px;font-size:24px">My Studio settings</p>
+<p style="font-size:24px">Auto play on overlay ></p>
+<p style="font-size:24px">Mute microphone on screen saver <span style="color:#D4FF00;font-size:24px">ON</span></p>
+<p style="margin-top:10px;font-size:24px">Screen resolution when connected: 720P</p>
+<p style="font-size:24px">Screen bitrate when connected: 5000 kbps</p>
+<p style="margin-top:10px;font-size:24px">Live</p>
+<p style="font-size:24px">Use live status indicator <span style="color:#D4FF00;font-size:24px">ON</span></p>
+<p style="font-size:24px">Save video after streaming <span style="color:#aaa;font-size:24px">OFF</span></p>
+<p style="font-size:24px">App version: 5.4.3 - STUDIO</p>
 <button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
 </div>
 <div id="nav">
@@ -182,36 +173,36 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="goLiveCard">
 <div style="display:flex;gap:10px;align-items:center">
 <img src="logo.png" class="jstvLogoSmall" alt="JSTV">
-<div><b>Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:13px">Live streaming of Mtume Kevin Liyayi</span></div>
+<div><b style="font-size:24px">Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:24px">Live streaming of Mtume Kevin Liyayi</span></div>
 </div>
-<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
+<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:24px"><span style="font-size:24px">Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:24px">My channels</button></div>
 <button class="goBtn" onclick="confirmGoLive()">Go Live</button>
-<button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px">Cancel</button>
+<button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px;font-size:24px">Cancel</button>
 </div>
 </div>
 <div id="channelsPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:20px;z-index:120;overflow-y:auto">
 <h3>Add platforms - RESTREAM RESTORED</h3>
 <div style="display:flex;gap:12px;margin:14px 0;flex-wrap:wrap">
-<div style="text-align:center"><div style="width:70px;height:70px;background:#1a73e8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900">R</div><p>Restream<br><small>Connected</small></p></div>
-<div style="text-align:center"><div style="width:70px;height:70px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900">f</div><p>Facebook<br><small>Connected</small></p></div>
-<div style="text-align:center"><div style="width:70px;height:70px;background:#FF0000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">▶</div><p>YouTube<br><small>Connected</small></p></div>
-<div style="text-align:center"><div style="width:70px;height:70px;background:#9146FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900">Tw</div><p>Twitch<br><small>Connected</small></p></div>
-<div style="text-align:center"><div style="width:70px;height:70px;background:#000;border:1px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">♪</div><p>TikTok<br><small>Connected</small></p></div>
-<div style="text-align:center"><div style="width:70px;height:70px;background:#E1306C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">IG</div><p>Instagram<br><small>Connected</small></p></div>
-<div style="width:70px;height:70px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">+</div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#1a73e8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900">R</div><p style="font-size:24px">Restream<br><small style="font-size:24px">Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900">f</div><p style="font-size:24px">Facebook<br><small style="font-size:24px">Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#FF0000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px">▶</div><p style="font-size:24px">YouTube<br><small style="font-size:24px">Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#9146FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900">Tw</div><p style="font-size:24px">Twitch<br><small style="font-size:24px">Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#000;border:1px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px">♪</div><p style="font-size:24px">TikTok<br><small style="font-size:24px">Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#E1306C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px">IG</div><p style="font-size:24px">Instagram<br><small style="font-size:24px">Connected</small></p></div>
+<div style="width:70px;height:70px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px">+</div>
 </div>
-<h3>My channels <span style="float:right;font-size:14px">✦ Multistream OFF</span></h3>
-<div style="background:#222;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><span>📡 Restream - All platforms</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000">● ON</span></div>
-<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000">● ON</span></div>
-<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi - Facebook</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff">OFF</span></div>
-<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi - YouTube</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff">OFF</span></div>
-<button onclick="closeChannels()" style="margin:auto;background:#333;color:#fff;border:none;width:50px;height:50px;border-radius:50%;font-size:20px">X</button>
+<h3>My channels <span style="float:right;font-size:24px">✦ Multistream OFF</span></h3>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:24px">📡 Restream - All platforms</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000;font-size:24px">● ON</span></div>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:24px">👤 Mtume Kevin Liyayi</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000;font-size:24px">● ON</span></div>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:24px">👤 Mtume Kevin Liyayi - Facebook</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff;font-size:24px">OFF</span></div>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:24px">👤 Mtume Kevin Liyayi - YouTube</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff;font-size:24px">OFF</span></div>
+<button onclick="closeChannels()" style="margin:auto;background:#333;color:#fff;border:none;width:50px;height:50px;border-radius:50%;font-size:24px">X</button>
 </div>
 <div id="startingScreen">
 <div style="font-size:60px">📱</div>
 <h2 style="margin-top:12px" id="startingTitle">Starting</h2>
-<p style="color:#ccc;margin-top:8px">Starting your live...</p>
-<button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px">Cancel</button>
+<p style="color:#ccc;margin-top:8px;font-size:24px">Starting your live...</p>
+<button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px;font-size:24px">Cancel</button>
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
