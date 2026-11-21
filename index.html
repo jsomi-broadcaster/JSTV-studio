@@ -46,38 +46,45 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
-/* --- WHOLE SCREEN AUTO ORIENTATION - NOT JUST CAMERA --- */
+/* --- WHOLE SCREEN ORIENTATION - AUTO + MANUAL BUTTON --- */
 #app{width:100%;height:100%;display:flex;flex-direction:column}
 #mainScreen{width:100%;height:100%;display:flex;flex-direction:column}
 #stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;width:100%;overflow:hidden}
 #cam{width:100%;height:100%;object-fit:cover;background:#222}
-/* PORTRAIT - WHOLE SCREEN TALL */
+/* AUTO - when no button pressed */
 @media (orientation: portrait){
-  #app{flex-direction:column}
-  #mainScreen{flex-direction:column}
-  #stage{width:100%;height:100%;flex:1;flex-direction:column}
-  #cam{width:100%;height:100%;object-fit:cover}
-  #logoOverlay{width:140px;height:140px}
-  #toolbar{flex-direction:row;width:100%;overflow-x:auto}
-  #nav{flex-direction:row;width:100%}
-  .panel{width:100%;max-height:42vh}
-  #goLive{bottom:110px;left:0;right:0;margin:0 auto}
-  #titleOverlay{font-size:22px}
+  #app:not(.force-landscape){flex-direction:column}
+  #app:not(.force-landscape) #mainScreen{flex-direction:column}
+  #app:not(.force-landscape) #stage{width:100%;height:100%;flex:1;flex-direction:column}
+  #app:not(.force-landscape) #cam{width:100%;height:100%;object-fit:cover}
+  #app:not(.force-landscape) #logoOverlay{width:140px;height:140px}
+  #app:not(.force-landscape) #toolbar{flex-direction:row;width:100%}
+  #app:not(.force-landscape) #nav{flex-direction:row;width:100%}
 }
-/* LANDSCAPE - WHOLE SCREEN WIDE */
 @media (orientation: landscape){
-  #app{flex-direction:row}
-  #mainScreen{flex-direction:row;flex-wrap:wrap}
-  #stage{flex:1 1 60%;width:60%;height:100%;flex-direction:row}
-  #cam{width:100%;height:100%;object-fit:cover}
-  #logoOverlay{width:90px;height:90px}
-  #toolbar{flex-direction:column;width:180px;overflow-y:auto;overflow-x:hidden;flex:none}
-  #nav{flex-direction:column;width:180px;flex:none}
-  #nav button{padding:12px 4px}
-  .panel{width:220px;max-height:100%;overflow-y:auto;flex:none}
-  #goLive{bottom:20px;left:0;right:0;margin:0 auto}
-  #titleOverlay{font-size:18px}
+  #app:not(.force-portrait){flex-direction:row}
+  #app:not(.force-portrait) #mainScreen{flex-direction:row;flex-wrap:wrap}
+  #app:not(.force-portrait) #stage{flex:1 1 60%;width:60%;height:100%;flex-direction:row}
+  #app:not(.force-portrait) #cam{width:100%;height:100%;object-fit:cover}
+  #app:not(.force-portrait) #logoOverlay{width:90px;height:90px}
+  #app:not(.force-portrait) #toolbar{flex-direction:column;width:180px;overflow-y:auto}
+  #app:not(.force-portrait) #nav{flex-direction:column;width:180px}
 }
+/* MANUAL - BUTTON FORCES IT, EVEN IF PHONE DOES NOT SENSE */
+#app.force-portrait{flex-direction:column!important}
+#app.force-portrait #mainScreen{flex-direction:column!important}
+#app.force-portrait #stage{width:100%!important;height:100%!important;flex:1!important;flex-direction:column!important}
+#app.force-portrait #cam{width:100%!important;height:100%!important;object-fit:cover!important}
+#app.force-portrait #logoOverlay{width:140px!important;height:140px!important}
+#app.force-portrait #toolbar{flex-direction:row!important;width:100%!important}
+#app.force-portrait #nav{flex-direction:row!important;width:100%!important}
+#app.force-landscape{flex-direction:row!important}
+#app.force-landscape #mainScreen{flex-direction:row!important;flex-wrap:wrap!important}
+#app.force-landscape #stage{flex:1 1 60%!important;width:60%!important;height:100%!important;flex-direction:row!important}
+#app.force-landscape #cam{width:100%!important;height:100%!important;object-fit:cover!important}
+#app.force-landscape #logoOverlay{width:90px!important;height:90px!important}
+#app.force-landscape #toolbar{flex-direction:column!important;width:180px!important;overflow-y:auto!important}
+#app.force-landscape #nav{flex-direction:column!important;width:180px!important}
 </style>
 </head>
 <body>
@@ -143,6 +150,7 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button onclick="showPanel('studioPanel')" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">🎬 My Studio</button>
 <button onclick="switchCamera()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🔄 Flip Cam</button>
 <button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">🎤 Mic</button>
+<button id="orientBtn" onclick="toggleOrientation()" style="white-space:nowrap;background:#FFD700;color:#000;border:1px solid #FFD700;padding:8px 12px;border-radius:20px;font-weight:bold">↔ Rotate: AUTO</button>
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px">⚙️ Settings</button>
 </div>
 <div id="connectPanel" class="panel"><h3>CONNECT</h3><label>Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label>RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://..."><label>Stream Key</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><p id="connectStatus" style="margin-top:8px;font-size:13px;color:#8f8"></p></div>
@@ -167,4 +175,125 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="tickerPanel" class="panel"><h3>Edit Ticker</h3><input id="tickerInput" placeholder="Type ticker text"><button onclick="applyTicker()">✅ Update Ticker</button><button onclick="showPanel('livePanel')" style="background:#333">Back</button></div>
 <div id="studioPanel" class="panel">
 <h3>🎬 My Studio</h3>
-<p style="font-size:13px;color:#aaa">Add Media, Playlist, Text, Widget like before
+<p style="font-size:13px;color:#aaa">Add Media, Playlist, Text, Widget like before.</p>
+<p style="margin-top:10px"><b>Media</b></p><input type="file" id="studioMedia" accept="video/*,image/*,audio/*"><button onclick="addStudioMedia()">➕ Add to Studio</button>
+<p style="margin-top:10px"><b>Playlist</b></p><input id="playlistName" placeholder="Playlist name - e.g. Sunday Songs"><button onclick="addPlaylist()">➕ Create Playlist</button>
+<p style="margin-top:10px"><b>Text</b></p><input id="studioText" placeholder="Text Here - e.g. JESUS IS LORD"><button onclick="applyStudioText()">✅ Show Text on Live</button>
+<p style="margin-top:10px"><b>Widget</b></p><button onclick="addWidget()">➕ Add Widget - Chat / Donation / Clock</button>
+<div id="studioList" style="margin-top:10px;background:#222;padding:10px;border-radius:8px;font-size:13px">No items yet - Add your first media above</div>
+<button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
+</div>
+<div id="settingsPanel" class="panel">
+<h3>Settings</h3>
+<p style="font-size:13px;color:#aaa">My account</p><p style="font-weight:bold">Apostle Kevin Favour</p><br>
+<p>Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px">></button></p>
+<p style="margin-top:10px">Save recent live title <span style="color:#D4FF00">ON</span></p>
+<p style="margin-top:10px">My Studio settings</p>
+<p>Auto play on overlay ></p>
+<p>Mute microphone on screen saver <span style="color:#D4FF00">ON</span></p>
+<p style="margin-top:10px">Screen resolution when connected: 720P</p>
+<p>Screen bitrate when connected: 5000 kbps</p>
+<p style="margin-top:10px">Live</p>
+<p>Use live status indicator <span style="color:#D4FF00">ON</span></p>
+<p>Save video after streaming <span style="color:#aaa">OFF</span></p>
+<p>App version: 5.4.3 - STUDIO</p>
+<button onclick="showPanel('livePanel')" style="background:#333">Back to LIVE</button>
+</div>
+<div id="nav">
+<button onclick="switchScreen('connectPanel',this)">CONNECT</button>
+<button class="active" onclick="switchScreen('livePanel',this)">LIVE</button>
+<button onclick="switchScreen('videoPanel',this)">VIDEO</button>
+<button onclick="switchScreen('photoPanel',this)">PHOTO</button>
+</div>
+</div>
+</div>
+<div id="goLivePopup">
+<div id="goLiveCard">
+<div style="display:flex;gap:10px;align-items:center">
+<img src="logo.png" class="jstvLogoSmall" alt="JSTV">
+<div><b>Mtume Kevin Liyayi</b><br><span style="color:#aaa;font-size:13px">Live streaming of Mtume Kevin Liyayi</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:14px;font-size:14px"><span>Intro ▾ &nbsp; 720p ▾</span><button onclick="showChannels()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:20px">My channels</button></div>
+<button class="goBtn" onclick="confirmGoLive()">Go Live</button>
+<button onclick="closeGoLivePopup()" style="background:none;border:none;color:#fff;width:100%;padding:12px;margin-top:4px">Cancel</button>
+</div>
+</div>
+<div id="channelsPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:20px;z-index:120">
+<h3>Add platforms</h3>
+<div style="display:flex;gap:12px;margin:14px 0">
+<div style="text-align:center"><div style="width:70px;height:70px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900">f</div><p>Facebook<br><small>Connected</small></p></div>
+<div style="text-align:center"><div style="width:70px;height:70px;background:#FF0000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">▶</div><p>YouTube<br><small>Connected</small></p></div>
+<div style="width:70px;height:70px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px">+</div>
+</div>
+<h3>My channels <span style="float:right;font-size:14px">✦ Multistream OFF</span></h3>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi</span><span style="background:#D4FF00;padding:6px 16px;border-radius:20px;color:#000">● ON</span></div>
+<div style="background:#222;padding:14px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span>👤 Mtume Kevin Liyayi - Facebook</span><span style="background:#555;padding:6px 16px;border-radius:20px;color:#fff">OFF</span></div>
+<button onclick="closeChannels()" style="margin:auto;background:#333;color:#fff;border:none;width:50px;height:50px;border-radius:50%;font-size:20px">X</button>
+</div>
+<div id="startingScreen">
+<div style="font-size:60px">📱</div>
+<h2 style="margin-top:12px" id="startingTitle">Starting</h2>
+<p style="color:#ccc;margin-top:8px">The screen orientation cannot be<br>rotated after broadcast has begun.</p>
+<button onclick="cancelStarting()" style="background:#555;color:#fff;border:none;padding:12px 30px;border-radius:20px;margin-top:40px">Cancel</button>
+</div>
+<div id="countScreen"><div id="countNum">0</div></div>
+<script>
+let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
+let orientMode='auto';
+function fixCamRotation(){
+  const cam=document.getElementById('cam');
+  if(!cam) return;
+  cam.style.transform=(facing==='user')?'scaleX(-1)':'none';
+}
+function toggleOrientation(){
+  const app=document.getElementById('app');
+  const btn=document.getElementById('orientBtn');
+  if(orientMode==='auto'){orientMode='portrait';app.classList.remove('force-landscape');app.classList.add('force-portrait');btn.innerText='↕ Portrait';}
+  else if(orientMode==='portrait'){orientMode='landscape';app.classList.remove('force-portrait');app.classList.add('force-landscape');btn.innerText='↔ Landscape';}
+  else{orientMode='auto';app.classList.remove('force-portrait','force-landscape');btn.innerText='↔ Rotate: AUTO';}
+}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+setTimeout(()=>{showScreen('permScreen');},2000);
+function loginGo(){showScreen('mainScreen');startCam();}
+async function startCam(){
+try{
+if(stream)stream.getTracks().forEach(t=>t.stop());
+stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920,min:1280},height:{ideal:1080,min:720},frameRate:{ideal:30,min:24}},audio:{echoCancellation:true,noiseSuppression:true}});
+document.getElementById('cam').srcObject=stream;
+fixCamRotation();
+}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});document.getElementById('cam').srcObject=stream;fixCamRotation();}catch(e2){alert('Allow Camera + Mic - Tap While using the app');}}
+}
+function setStudioTab(tab,btn){document.querySelectorAll('.studioTab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const info=document.getElementById('studioTabInfo');if(tab==='media')info.innerText='My Studio - Media: Add your videos, images, music';if(tab==='playlist')info.innerText='My Studio - Playlist: Your playlists';if(tab==='text')info.innerText='My Studio - Text: Text Here overlays';if(tab==='widget')info.innerText='My Studio - Widget: Chat / Donation / Clock';}
+function setSource(src,btn){document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');if(src==='camera')startCam();else alert(src+' - Coming soon, Camera is active now');}
+function switchScreen(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function updateTitle(){document.getElementById('titleOverlay').innerText=document.getElementById('streamTitle').value||'JSTV LIVE';}
+function applyTitle(){document.getElementById('titleOverlay').innerText=document.getElementById('titleInput').value;document.getElementById('titleOverlay').style.color=document.getElementById('titleColor').value;showPanel('livePanel');}
+function hideTitle(){document.getElementById('titleOverlay').innerText='';}
+function resizeLogo(){let s=document.getElementById('logoSize').value;let l=document.getElementById('logoOverlay');l.style.width=s+'px';l.style.height=s+'px';}
+function hideLogo(){document.getElementById('logoOverlay').style.display='none';}
+function showLogo(){document.getElementById('logoOverlay').style.display='block';}
+function applyFile(){const f=document.getElementById('overlayFile').files[0];if(!f)return alert('Choose file');const r=new FileReader();r.onload=e=>{let img=document.createElement('img');img.src=e.target.result;img.style.cssText='position:absolute;top:80px;left:12px;width:150px;z-index:11';document.getElementById('stage').appendChild(img);};r.readAsDataURL(f);showPanel('livePanel');}
+function applyTicker(){const t=document.getElementById('tickerInput').value;if(t)document.getElementById('tickerText').innerText='✦ '+t+' ✦';showPanel('livePanel');}
+function switchCamera(){facing=facing==='user'?'environment':'user';startCam();}
+function toggleMic(){if(!stream)return;micOn=!micOn;stream.getAudioTracks().forEach(t=>t.enabled=micOn);alert(micOn?'Mic ON':'Mic OFF');}
+function saveConnect(){localStorage.setItem('jstv_rtmp',document.getElementById('rtmpUrl').value);localStorage.setItem('jstv_key',document.getElementById('streamKey').value);document.getElementById('connectStatus').innerText='✅ Saved!';}
+function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
+function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
+function takePhoto(){const v=document.getElementById('cam');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;const ctx=c.getContext('2d');if(facing==='user'){ctx.translate(c.width,0);ctx.scale(-1,1);}ctx.drawImage(v,0,0);const img=document.getElementById('photoResult');img.src=c.toDataURL('image/jpeg');img.style.display='block';const a=document.getElementById('downloadPhoto');a.href=img.src;a.style.display='block';}
+function addStudioMedia(){const f=document.getElementById('studioMedia').files[0];if(!f)return alert('Choose media');document.getElementById('studioList').innerHTML='✅ Added: '+f.name+'<br>'+document.getElementById('studioList').innerHTML;}
+function addPlaylist(){const n=document.getElementById('playlistName').value;if(!n)return alert('Type playlist name');document.getElementById('studioList').innerHTML='✅ Playlist: '+n+'<br>'+document.getElementById('studioList').innerHTML;}
+function applyStudioText(){const t=document.getElementById('studioText').value;if(t)document.getElementById('titleOverlay').innerText=t;showPanel('livePanel');}
+function addWidget(){document.getElementById('studioList').innerHTML='✅ Widget Added: Chat / Clock<br>'+document.getElementById('studioList').innerHTML;}
+function openGoLivePopup(){document.getElementById('goLivePopup').classList.add('show');}
+function closeGoLivePopup(){document.getElementById('goLivePopup').classList.remove('show');}
+function showChannels(){document.getElementById('channelsPopup').style.display='flex';}
+function closeChannels(){document.getElementById('channelsPopup').style.display='none';}
+function confirmGoLive(){closeGoLivePopup();document.getElementById('startingScreen').classList.add('show');setTimeout(()=>{document.getElementById('startingScreen').classList.remove('show');document.getElementById('countScreen').classList.add('show');setTimeout(()=>{document.getElementById('countScreen').classList.remove('show');startLive();},1000);},2000);}
+function cancelStarting(){document.getElementById('startingScreen').classList.remove('show');}
+function startLive(){isLive=true;document.getElementById('app').classList.add('is-live');document.getElementById('goLive').innerText='● LIVE';document.getElementById('liveStatus').innerText='🔴 LIVE NOW - 00:00';liveSec=0;liveTimer=setInterval(()=>{liveSec++;let m=String(Math.floor(liveSec/60)).padStart(2,'0'),s=String(liveSec%60).padStart(2,'0');document.getElementById('liveTimer').innerText=m+':'+s;document.getElementById('liveStatus').innerText='🔴 LIVE NOW - '+m+':'+s;},1000);}
+function stopLive(){isLive=false;document.getElementById('app').classList.remove('is-live');document.getElementById('goLive').innerText='Ready';document.getElementById('liveStatus').innerText='Ready - Camera On';clearInterval(liveTimer);}
+try{document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';}catch(e){}
+</script>
+</body>
+</html>
