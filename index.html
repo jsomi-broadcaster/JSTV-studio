@@ -46,15 +46,64 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 #app.is-live #toolbar,#app.is-live #nav,#app.is-live .panel{display:none!important}
 .studioTab{flex:1;padding:10px 4px;background:#222;color:#aaa;border:none;font-size:12px;font-weight:bold}
 .studioTab.on{background:#FFD700;color:#000}
-@media (orientation: portrait){
-  #app{flex-direction:column}
-  #stage{width:100%;height:100%;flex-direction:column}
-  #logoOverlay{width:90px;height:90px}
+/* --- JSTV PORTRAIT + LANDSCAPE - Camera untouched - FIXED: NO rotate --- */
+/* Base - from your file */
+#app{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
+#stage{
+  flex:1;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  overflow:hidden;
+}
+#cam{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#222;
+}
+/* PORTRAIT - Phone standing up */
+@media (orientation: portrait){
+  #app{ flex-direction:column; }
+  #stage{
+    width:100%;
+    height:100%;
+    flex-direction:column;
+  }
+  #cam{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  #logoOverlay{
+    width:140px;
+    height:140px;
+  }
+}
+/* LANDSCAPE - Phone turned sideways */
 @media (orientation: landscape){
-  #app{flex-direction:row}
-  #stage{width:100%;height:100%;flex-direction:row}
-  #logoOverlay{width:60px;height:60px}
+  #app{ flex-direction:row; }
+  #stage{
+    width:100%;
+    height:100%;
+    flex-direction:row;
+  }
+  #cam{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  #logoOverlay{
+    width:90px;
+    height:90px;
+  }
 }
 </style>
 </head>
