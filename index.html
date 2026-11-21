@@ -129,7 +129,11 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <button onclick="toggleMic()" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">🎤 Mic</button>
 <button onclick="showPanel('settingsPanel')" style="white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;padding:8px 12px;border-radius:20px;font-size:24px">⚙️ Settings</button>
 </div>
-<div id="connectPanel" class="panel"><h3>CONNECT - REAL LIVE</h3><label style="font-size:24px">Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label style="font-size:24px">WHIP URL - Cloudflare Stream</label><input id="whipUrl" placeholder="https://customer-xxxx.live.cloudflare.com/.../whip"><label style="font-size:24px">Playback URL - Share this link</label><input id="playbackUrl" placeholder="https://customer-xxxx.cloudflarestream.com/.../watch"><label style="font-size:24px">Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label style="font-size:24px">Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:24px;color:#8f8"></p></div>
+<div id="connectPanel" class="panel"><h3>CONNECT - REAL LIVE</h3>
+<!-- JSTV DEVELOPER STREAM - STEP 2: Connect Button -->
+<button onclick="connectRestream()" style="background:#1a73e8;color:#fff;font-weight:900">🔗 Connect Restream Account - No Key Needed</button>
+<p id="restreamStatus" style="margin-top:8px;font-size:24px;color:#FFD700">Not connected - Tap above to connect YOUR Restream</p>
+<label style="font-size:24px">Stream Title</label><input id="streamTitle" placeholder="e.g. Sunday Service Live" oninput="updateTitle()"><label style="font-size:24px">WHIP URL - Cloudflare Stream</label><input id="whipUrl" placeholder="https://customer-xxxx.live.cloudflare.com/.../whip"><label style="font-size:24px">Playback URL - Share this link</label><input id="playbackUrl" placeholder="https://customer-xxxx.cloudflarestream.com/.../watch"><label style="font-size:24px">Restream / RTMP URL</label><input id="rtmpUrl" placeholder="rtmp://live.restream.io/live"><label style="font-size:24px">Stream Key - Restream / Facebook / YouTube</label><input id="streamKey" type="password" placeholder="Your Stream Key"><button onclick="saveConnect()">💾 Save Connection</button><button onclick="showChannels()">📡 Add Platforms - Restream, Facebook, YouTube, Twitch, TikTok</button><p id="connectStatus" style="margin-top:8px;font-size:24px;color:#8f8"></p></div>
 <div id="livePanel" class="panel active"><h3>LIVE CONTROLS - STUDIO</h3><p style="font-size:24px;color:#aaa">Status: <span id="liveStatus" style="font-size:24px">Ready - Camera On - Logo ON - Studio Ready</span></p><p style="font-size:24px;color:#FFD700">Tip: Drag Logo / Title / Ticker on live screen to move. Drag yellow corner to resize.</p><button onclick="showPanel('titlePanel')">➕ Add Title</button><button onclick="showPanel('logoPanel')">🖼️ Logo Settings - Real JSTV Logo</button><button onclick="showPanel('studioPanel')">🎬 Open My Studio</button></div>
 <div id="videoPanel" class="panel"><h3>VIDEO</h3><input type="file" id="videoFile" accept="video/*,image/*"><button onclick="playFile()">▶️ Show File on Live</button><button onclick="backToCam()" style="background:#333">📷 Back to Camera</button><video id="filePreview" controls style="width:100%;margin-top:10px;display:none"></video></div>
 <div id="photoPanel" class="panel"><h3>PHOTO</h3><button onclick="takePhoto()">📸 Take Snapshot</button><img id="photoResult" style="width:100%;margin-top:10px;border-radius:10px;display:none"><a id="downloadPhoto" download="jstv-photo.jpg" style="display:none"><button>⬇️ Download Photo</button></a></div>
@@ -161,6 +165,8 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="settingsPanel" class="panel">
 <h3>Settings</h3>
 <p style="font-size:24px;color:#aaa">My account</p><p style="font-weight:bold;font-size:24px" id="settingsUser">Not logged in</p><br>
+<button onclick="connectRestream()" style="background:#1a73e8">🔗 Connect Restream Account</button>
+<p id="restreamStatus2" style="font-size:24px;color:#FFD700"></p>
 <p style="font-size:24px">Stream destinations <button onclick="showChannels()" style="width:auto;padding:6px 12px;font-size:24px">></button></p>
 <p style="margin-top:10px;font-size:24px">Save recent live title <span style="color:#D4FF00;font-size:24px">ON</span></p>
 <p style="margin-top:10px;font-size:24px">My Studio settings</p>
@@ -196,6 +202,8 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="channelsPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:20px;z-index:120;overflow-y:auto">
 <h3>Add platforms - RESTREAM RESTORED</h3>
+<button onclick="connectRestream()" style="background:#1a73e8;color:#fff;border:none;padding:14px;border-radius:12px;font-weight:900;font-size:24px;width:100%">🔗 Connect Restream Account - No Key Needed</button>
+<p id="restreamStatus3" style="font-size:24px;color:#FFD700;text-align:center"></p>
 <div style="display:flex;gap:12px;margin:14px 0;flex-wrap:wrap">
 <div style="text-align:center"><div style="width:70px;height:70px;background:#1a73e8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900">R</div><p style="font-size:24px">Restream<br><small style="font-size:24px">Connected</small></p></div>
 <div style="text-align:center"><div style="width:70px;height:70px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900">f</div><p style="font-size:24px">Facebook<br><small style="font-size:24px">Connected</small></p></div>
@@ -226,6 +234,31 @@ const firebaseConfig = {
   messagingSenderId: "963989598148",
   appId: "1:963989598148:web:dc29e372a03ec7bf707e91"
 };
+// ===== JSTV DEVELOPER STREAM - RESTREAM OAUTH =====
+const RESTREAM_CLIENT_ID = "e3352741-91a2-455a-a52b-97c66f34ef76";
+const RESTREAM_REDIRECT = "https://jsomi-broadcaster.github.io/JSTV-studio/callback.html";
+function connectRestream(){
+  const url = "https://api.restream.io/oauth/authorize?client_id=" + RESTREAM_CLIENT_ID + "&redirect_uri=" + encodeURIComponent(RESTREAM_REDIRECT) + "&response_type=code&scope=" + encodeURIComponent("profile.read channels.read streams.read streams.write");
+  window.location.href = url;
+}
+function updateRestreamUI(){
+  const userKey = currentUser ? (currentUser.email || currentUser.uid) : 'guest';
+  const code = localStorage.getItem('jstv_restream_code_' + userKey) || localStorage.getItem('jstv_code');
+  const msg = code ? "✅ Restream Connected for " + userKey + " - No key needed, Go Live works" : "Not connected - Tap above to connect YOUR Restream";
+  ['restreamStatus','restreamStatus2','restreamStatus3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText = msg; });
+}
+function checkRestreamCallback(){
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  if(code){
+    const userKey = currentUser ? (currentUser.email || currentUser.uid) : 'guest';
+    localStorage.setItem('jstv_restream_code_' + userKey, code);
+    localStorage.setItem('jstv_code', code);
+    // Clean URL so code is not in address bar
+    window.history.replaceState({}, "", window.location.pathname);
+    updateRestreamUI();
+  }
+}
 let DEFAULT_WHIP = "PASTE YOUR WHIP URL";
 let DEFAULT_PLAYBACK = "PASTE YOUR PLAYBACK URL";
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
@@ -244,11 +277,15 @@ function initFirebaseNow(){
         document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
         document.getElementById('logoutBtn').style.display='block';
         setTimeout(loadMyRestream, 500);
+        checkRestreamCallback();
+        updateRestreamUI();
         if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
       } else {
         document.getElementById('userInfo').innerText='Not logged in';
         document.getElementById('settingsUser').innerText='Not logged in';
         document.getElementById('logoutBtn').style.display='none';
+        checkRestreamCallback();
+        updateRestreamUI();
       }
     });
     return true;
@@ -371,6 +408,7 @@ function loadMyRestream(){
     document.getElementById('streamKey').value = '';
     document.getElementById('connectStatus').innerText = 'Login with your Restream key once - next time it will auto-connect.';
   }
+  updateRestreamUI();
 }
 function playFile(){const f=document.getElementById('videoFile').files[0];if(!f)return alert('Choose video');const v=document.getElementById('filePreview');v.src=URL.createObjectURL(f);v.style.display='block';v.play();}
 function backToCam(){document.getElementById('filePreview').pause();document.getElementById('filePreview').style.display='none';startCam();}
@@ -430,6 +468,8 @@ try{
   document.getElementById('rtmpUrl').value=localStorage.getItem('jstv_rtmp')||'';
   document.getElementById('streamKey').value=localStorage.getItem('jstv_key')||'';
 }catch(e){}
+checkRestreamCallback();
+updateRestreamUI();
 initDraggables();
 </script>
 </body>
