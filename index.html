@@ -218,40 +218,37 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 <div id="countScreen"><div id="countNum">0</div></div>
 <script>
-/* ===== PASTE YOUR REAL KEYS HERE ===== */
+/* ===== YOUR REAL JSTV App KEYS ===== */
 const firebaseConfig = {
-  apiKey: "PASTE YOUR FIREBASE API KEY",
-  authDomain: "PASTE YOUR FIREBASE PROJECT.firebaseapp.com",
-  projectId: "PASTE YOUR FIREBASE PROJECT ID",
-  appId: "PASTE YOUR FIREBASE APP ID"
+  apiKey: "AIzaSyDjm8Rn-QK69vL08E4YN2eAKsnJ0QMut7c",
+  authDomain: "jstv-app-5cbfe.firebaseapp.com",
+  projectId: "jstv-app-5cbfe",
+  storageBucket: "jstv-app-5cbfe.firebasestorage.app",
+  messagingSenderId: "963989598148",
+  appId: "1:963989598148:web:dc29e372a03ec7bf707e91"
 };
-/* Cloudflare Stream Live Input - paste after you create it */
 let DEFAULT_WHIP = "PASTE YOUR WHIP URL";
 let DEFAULT_PLAYBACK = "PASTE YOUR PLAYBACK URL";
-/* ===== END PASTE ===== */
+/* ===== END ===== */
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
 let pc=null, currentUser=null;
 try{
-  if(firebaseConfig.apiKey.indexOf('PASTE')===-1){
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().onAuthStateChanged(function(user){
-      currentUser=user;
-      if(user){
-        document.getElementById('userInfo').innerText='Logged in as: '+(user.displayName||user.email);
-        document.getElementById('settingsUser').innerText=user.displayName||user.email;
-        document.getElementById('goLiveUser').innerText=user.displayName||user.email;
-        document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
-        document.getElementById('logoutBtn').style.display='block';
-        if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
-      } else {
-        document.getElementById('userInfo').innerText='Not logged in';
-        document.getElementById('settingsUser').innerText='Not logged in';
-        document.getElementById('logoutBtn').style.display='none';
-      }
-    });
-  } else {
-    document.getElementById('loginError').innerText='Paste your Firebase keys in the code to enable real login. See top of script.';
-  }
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().onAuthStateChanged(function(user){
+    currentUser=user;
+    if(user){
+      document.getElementById('userInfo').innerText='Logged in as: '+(user.displayName||user.email);
+      document.getElementById('settingsUser').innerText=user.displayName||user.email;
+      document.getElementById('goLiveUser').innerText=user.displayName||user.email;
+      document.getElementById('authStatusSplash').innerText='Welcome back: '+(user.displayName||user.email);
+      document.getElementById('logoutBtn').style.display='block';
+      if(document.getElementById('loginScreen').classList.contains('active')){ showScreen('mainScreen'); startCam(); }
+    } else {
+      document.getElementById('userInfo').innerText='Not logged in';
+      document.getElementById('settingsUser').innerText='Not logged in';
+      document.getElementById('logoutBtn').style.display='none';
+    }
+  });
 }catch(e){ document.getElementById('loginError').innerText='Auth setup error: '+e.message; }
 async function loginGoogle(){
   try{
