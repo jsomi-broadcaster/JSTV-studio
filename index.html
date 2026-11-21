@@ -236,7 +236,6 @@ const firebaseConfig = {
 const RESTREAM_CLIENT_ID = "e3352741-91a2-455a-a52b-97c66f34ef76";
 const RESTREAM_REDIRECT = "https://jsomi-broadcaster.github.io/JSTV-studio/callback.html";
 async function connectRestream(){
-  // PKCE - required by Restream for public apps
   const verifier = Array.from(crypto.getRandomValues(new Uint8Array(64))).map(b=>('00'+b.toString(16)).slice(-2)).join('').slice(0,128);
   localStorage.setItem('jstv_pkce_verifier', verifier);
   const data = new TextEncoder().encode(verifier);
@@ -474,7 +473,9 @@ try{
 checkRestreamCallback();
 updateRestreamUI();
 initDraggables();
-  <div id="jstvAlert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+</script>
+<!-- JSTV ALERT FIX - CORRECT PLACE: AFTER </script>, BEFORE </body> -->
+<div id="jstvAlert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
   <div style="background:#111;border:2px solid gold;border-radius:15px;padding:20px;width:85%;max-width:350px;text-align:center">
     <div style="color:gold;font-weight:bold;font-size:24px">JSTV STUDIO</div>
     <div id="jstvAlertText" style="color:white;margin:15px 0;font-size:24px"></div>
