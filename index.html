@@ -200,8 +200,6 @@ input{width:100%;max-width:340px;padding:12px;margin:6px 0;border-radius:10px;bo
 <script>
 let stream=null, facing='user', micOn=true, isLive=false, liveTimer=null, liveSec=0;
 let currentAngle = 0;
-
-// --- FIX FROM YOUR FILE: Camera counter-rotation, NO screen orientation lock ---
 function fixCamRotation(){
   const cam = document.getElementById('cam');
   if(!cam) return;
@@ -221,7 +219,6 @@ function updateAngleFromScreen(){
 window.addEventListener('orientationchange', ()=>{ setTimeout(updateAngleFromScreen, 300); });
 window.addEventListener('resize', ()=>{ setTimeout(updateAngleFromScreen, 200); });
 if(screen.orientation && screen.orientation.addEventListener){ screen.orientation.addEventListener('change', updateAngleFromScreen); }
-
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 setTimeout(()=>{showScreen('permScreen');},2000);
 function loginGo(){showScreen('mainScreen');startCam();}
