@@ -474,6 +474,18 @@ try{
 checkRestreamCallback();
 updateRestreamUI();
 initDraggables();
+  <div id="jstvAlert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#111;border:2px solid gold;border-radius:15px;padding:20px;width:85%;max-width:350px;text-align:center">
+    <div style="color:gold;font-weight:bold;font-size:24px">JSTV STUDIO</div>
+    <div id="jstvAlertText" style="color:white;margin:15px 0;font-size:24px"></div>
+    <button onclick="document.getElementById('jstvAlert').style.display='none'" style="background:gold;color:black;padding:10px 25px;border:none;border-radius:8px;font-weight:bold;font-size:24px">OK</button>
+  </div>
+</div>
+<script>
+window.alert = function(msg){
+  document.getElementById('jstvAlertText').innerText = msg;
+  document.getElementById('jstvAlert').style.display = 'flex';
+};
 </script>
 </body>
 </html>
